@@ -1,0 +1,29 @@
+import random
+
+# Server side code for Admiral Acknownledgement
+# To do:
+# 1.) Rewrite code in C++
+# 2.) Create board for both players.
+# 3.) Receive player movement
+#       b.) Verify player input is correct
+# 4.) Receive player's torpedo
+
+gridWidth = 10
+gridLength = 10
+gridOutline = 25
+
+game_grid = []
+for x in range(10):
+    y_grid = []
+    for y in range(10):
+        value = '0'
+        if random.randrange(0, 11, 1) == 5:
+            value = '#'
+        y_grid.append(value)
+    game_grid.append(y_grid)
+
+
+for x in range(10):
+    for y in range(10):
+        print(game_grid[x][y], end="  ")
+    print()
