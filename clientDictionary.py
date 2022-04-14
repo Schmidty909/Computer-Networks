@@ -56,9 +56,6 @@ class game_grid():
             playerX = self.x
             playerY = self.y
 
-
-
-
         else:
             self.color = self.initalcolor
 
