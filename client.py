@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-## James is gay
+
 pygame.init()
 
 win_width = 1050
@@ -70,6 +70,8 @@ def print_game_grid(array):
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 
+
+
 class Board():
     def __init__(self, width, height, color):
         self.width = width
@@ -96,18 +98,25 @@ class Player():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            self.x -= self.vel
+            self.x -= 100
+
 
         if keys[pygame.K_RIGHT]:
-            self.x += self.vel
+            self.x += 100
 
         if keys[pygame.K_UP]:
-            self.y -= self.vel
+            self.y -= 100
+
 
         if keys[pygame.K_DOWN]:
-            self.y += self.vel
+            self.y += 100
 
-        self.rect = (self.x, self.y, self.width, self.height)
+
+        self.rect = (self.x , self.y, self.width, self.height)
+
+
+
+
 
 
 def redrawWindow(p1, window):
@@ -118,12 +127,13 @@ def redrawWindow(p1, window):
 
 def main():
     run = True
-    p = Player(450, 450, 50, 100, (128,128,128))
+    p = Player(475, 475, 50, 50, (128,128,128))
     clock = pygame.time.Clock()
     build_game_grid(game_grid)
 
+
     while run:
-        clock.tick(30)
+        clock.tick(10)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
