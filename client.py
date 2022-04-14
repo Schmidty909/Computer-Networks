@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-
+## James is gay
 pygame.init()
 
 win_width = 1050
