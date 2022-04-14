@@ -34,14 +34,18 @@ class game_grid():
         self.x = x
         self.y = y
         self.color = ocean_blue
+        self.initalcolor = ocean_blue
         self.rect = pygame.draw.rect(window, self.color, [self.x, self.y , 100, 100])
         self.island = False
         self.has_player = False
         self.already_been_here = False
     def changeColor(self):
         position = pygame.mouse.get_pos()
+
         if position[0] in range(self.rect.left,self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
             self.color = grey
+        else:
+            self.color = self.initalcolor
 
 
 class Player():
@@ -85,6 +89,7 @@ def build_game_grid():
         for count, index in enumerate(game_dictionary[key]):
             if random.randrange(1, 11) == 10:
                 game_dictionary[key][count].color = green
+                game_dictionary[key][count].initalcolor = green
                 game_dictionary[key][count].island = True
 
 
@@ -130,6 +135,7 @@ game_dictionary = {"a": [game_grid(50,50),game_grid(50,150),game_grid(50,250),ga
 
 def main():
     run = True
+    Selection = True
     clock = pygame.time.Clock()
     build_game_grid()
 
@@ -138,19 +144,19 @@ def main():
     while run:
         clock.tick(10)
         posoition = pygame.mouse.get_pos()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
         print_game_grid() ##Drawing inital grid
         p.draw(window) ##Drawing player on grid
         p.move() ## Movement for player
         for key in game_dictionary.keys():
             for count, index in enumerate(game_dictionary[key]):
                 game_grid.changeColor(game_dictionary[key][count])
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+
+
         pygame.display.update()
-
-
 
 main()
