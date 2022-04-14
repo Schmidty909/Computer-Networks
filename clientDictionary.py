@@ -6,8 +6,9 @@ import random
 
 pygame.init()
 
-win_width = 1050
-win_height = 1050
+win_width = 1100
+win_height = 1100
+
 
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -17,7 +18,7 @@ black = (0, 0, 0)
 
 window = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Captain Admiral")
-DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
 
 
 font = pygame.font.Font('cour.ttf', 40)
@@ -32,26 +33,64 @@ class game_grid():
     def __init__(self,x,y):
         self.x = x
         self.y = y
-        self.color = red
+        self.color = ocean_blue
+        self.rect = pygame.draw.rect(window, self.color, [self.x, self.y , 100, 100])
+        self.island = False
+        self.has_player = False
+        self.already_been_here = False
+    def changeColor(self):
+        position = pygame.mouse.get_pos()
+        if position[0] in range(self.rect.left,self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+            self.color = grey
 
 
-game_dictionary = {"a": [game_grid(10,10),game_grid(155,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
-                   "b": [game_grid(50,150),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,150)],
-                   "c": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,950)],
-                   "d": [game_grid(50,50),game_grid(153,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
-                   "e": [game_grid(50,250),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,150)],
-                   "f": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,950)],
-                   "g": [game_grid(50,50),game_grid(153,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
-                   "h": [game_grid(50,250),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,50)],
-                   "i": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,750)],
-                   "j": [game_grid(50, 950), game_grid(153, 950), game_grid(250, 950), game_grid(350, 950),game_grid(450, 950), game_grid(550, 950), game_grid(650, 950), game_grid(750, 950),game_grid(850, 950), game_grid(950, 950)]
-}
+class Player():
+    def __init__(self,x,y, width, height, color):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+        self.rect = (x, y, width, height)
+        self.vel = 20
 
 
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, self.rect)
+
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            self.x -= 100
+
+        if keys[pygame.K_RIGHT]:
+            self.x += 100
+
+        if keys[pygame.K_UP]:
+            self.y -= 100
+
+
+        if keys[pygame.K_DOWN]:
+            self.y += 100
+
+
+        self.rect = (self.x , self.y, self.width, self.height)
+
+
+def build_game_grid():
+
+    for key in game_dictionary.keys():
+        for count, index in enumerate(game_dictionary[key]):
+            if random.randrange(1, 11) == 10:
+                game_dictionary[key][count].color = green
+                game_dictionary[key][count].island = True
 
 
 
 def print_game_grid():
+    ## Loops to make Row and Column headers
     counter = 85
     for x in range(65, 75, 1):
         top_row_letters = font.render(chr(x), True, grey)
@@ -63,24 +102,53 @@ def print_game_grid():
         side_row_numbers = font.render(chr(y), True, grey)
         window.blit(side_row_numbers, (5, counter))
         counter += 100
+    ## Loops to make square pieces
     for key in game_dictionary.keys():
-        x = 0
-        for index in game_dictionary[key]:
-            pygame.draw.rect(window, game_dictionary[key][x].color, [game_dictionary[key][x].x, game_dictionary[key][x].y , 100, 100])
-            x += 1
+        for count,index in enumerate(game_dictionary[key]):
+            game_dictionary[key][count].rect = pygame.draw.rect(window, game_dictionary[key][count].color, [game_dictionary[key][count].x, game_dictionary[key][count].y , 100, 100])
+    ## Loop to make the seperation between grid pieces
+    for x in range(grid_width):
+        pygame.draw.rect(window, black, (x * 100 + 50, 0, 2, win_height))
+    for y in range(grid_length):
+        pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
+
+
+
+
+game_dictionary = {"a": [game_grid(50,50),game_grid(50,150),game_grid(50,250),game_grid(50,350),game_grid(50,450),game_grid(50,550),game_grid(50,650),game_grid(50,750),game_grid(50,850),game_grid(50,950)],
+                   "b": [game_grid(150,50),game_grid(150,150),game_grid(150,250),game_grid(150,350),game_grid(150,450),game_grid(150,550),game_grid(150,650),game_grid(150,750),game_grid(150,850),game_grid(150,950)],
+                   "c": [game_grid(250,50),game_grid(250,150),game_grid(250,250),game_grid(250,350),game_grid(250,450),game_grid(250,550),game_grid(250,650),game_grid(250,750),game_grid(250,850),game_grid(250,950)],
+                   "d": [game_grid(350,50),game_grid(350,150),game_grid(350,250),game_grid(350,350),game_grid(350,450),game_grid(350,550),game_grid(350,650),game_grid(350,750),game_grid(350,850),game_grid(350,950)],
+                   "e": [game_grid(450,50),game_grid(450,150),game_grid(450,250),game_grid(450,350),game_grid(450,450),game_grid(450,550),game_grid(450,650),game_grid(450,750),game_grid(450,850),game_grid(450,950)],
+                   "f": [game_grid(550,50),game_grid(550,150),game_grid(550,250),game_grid(550,350),game_grid(550,450),game_grid(550,550),game_grid(550,650),game_grid(550,750),game_grid(550,850),game_grid(550,950)],
+                   "g": [game_grid(650,50),game_grid(650,150),game_grid(650,250),game_grid(650,350),game_grid(650,450),game_grid(650,550),game_grid(650,650),game_grid(650,750),game_grid(650,850),game_grid(650,950)],
+                   "h": [game_grid(750,50),game_grid(750,150),game_grid(750,250),game_grid(750,350),game_grid(750,450),game_grid(750,550),game_grid(750,650),game_grid(750,750),game_grid(750,850),game_grid(750,950)],
+                   "i": [game_grid(850,50),game_grid(850,150),game_grid(850,250),game_grid(850,350),game_grid(850,450),game_grid(850,550),game_grid(850,650),game_grid(850,750),game_grid(850,850),game_grid(850,950)],
+                   "j": [game_grid(950,50),game_grid(950,150),game_grid(950,250),game_grid(950,350),game_grid(950,450),game_grid(950,550),game_grid(950,650),game_grid(950,750),game_grid(950,850),game_grid(950,950)]
+}
 
 def main():
     run = True
     clock = pygame.time.Clock()
+    build_game_grid()
 
+
+    p = Player(450, 450, 50, 50, grey)
     while run:
         clock.tick(10)
+        posoition = pygame.mouse.get_pos()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-        print_game_grid()
+        print_game_grid() ##Drawing inital grid
+        p.draw(window) ##Drawing player on grid
+        p.move() ## Movement for player
+        for key in game_dictionary.keys():
+            for count, index in enumerate(game_dictionary[key]):
+                game_grid.changeColor(game_dictionary[key][count])
         pygame.display.update()
 
 
