@@ -35,9 +35,16 @@ class game_grid():
         self.color = red
 
 
-game_dictionary = {"a": [game_grid(50,50),game_grid(153,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
+game_dictionary = {"a": [game_grid(10,10),game_grid(155,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
                    "b": [game_grid(50,150),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,150)],
-                   "c": [game_grid(50,250),game_grid(150,250),game_grid(250,250),game_grid(350,250),game_grid(450,250),game_grid(550,250),game_grid(650,250),game_grid(750,250),game_grid(850,250),game_grid(950,250)]
+                   "c": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,950)],
+                   "d": [game_grid(50,50),game_grid(153,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
+                   "e": [game_grid(50,250),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,150)],
+                   "f": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,950)],
+                   "g": [game_grid(50,50),game_grid(153,50),game_grid(250,50),game_grid(350,50),game_grid(450,50),game_grid(550,50),game_grid(650,50),game_grid(750,50),game_grid(850,50),game_grid(950,50)],
+                   "h": [game_grid(50,250),game_grid(150,150),game_grid(250,150),game_grid(350,150),game_grid(450,150),game_grid(550,150),game_grid(650,150),game_grid(750,150),game_grid(850,150),game_grid(950,50)],
+                   "i": [game_grid(50,950),game_grid(150,950),game_grid(250,950),game_grid(350,950),game_grid(450,950),game_grid(550,950),game_grid(650,950),game_grid(750,950),game_grid(850,950),game_grid(950,750)],
+                   "j": [game_grid(50, 950), game_grid(153, 950), game_grid(250, 950), game_grid(350, 950),game_grid(450, 950), game_grid(550, 950), game_grid(650, 950), game_grid(750, 950),game_grid(850, 950), game_grid(950, 950)]
 }
 
 
@@ -45,6 +52,17 @@ game_dictionary = {"a": [game_grid(50,50),game_grid(153,50),game_grid(250,50),ga
 
 
 def print_game_grid():
+    counter = 85
+    for x in range(65, 75, 1):
+        top_row_letters = font.render(chr(x), True, grey)
+        window.blit(top_row_letters, (counter, 0))
+        counter += 100
+
+    counter = 80
+    for y in range(48, 58, 1):
+        side_row_numbers = font.render(chr(y), True, grey)
+        window.blit(side_row_numbers, (5, counter))
+        counter += 100
     for key in game_dictionary.keys():
         x = 0
         for index in game_dictionary[key]:
