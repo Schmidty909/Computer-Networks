@@ -9,6 +9,8 @@ pygame.init()
 win_width = 1100
 win_height = 1100
 
+playerX = 0
+playerY = 0
 
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -29,6 +31,8 @@ grid_width = 10
 grid_length = 10
 
 
+
+
 class game_grid():
     def __init__(self,x,y):
         self.x = x
@@ -43,9 +47,14 @@ class game_grid():
         position = pygame.mouse.get_pos()
 
         if position[0] in range(self.rect.left,self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
-            self.color = grey
+            self.color = black
+
+            print(self.x)
+            print(self.y)
         else:
             self.color = self.initalcolor
+
+
 
 
 class Player():
@@ -140,23 +149,39 @@ def main():
     build_game_grid()
 
 
-    p = Player(450, 450, 50, 50, grey)
-    while run:
-        clock.tick(10)
-        posoition = pygame.mouse.get_pos()
-        print_game_grid() ##Drawing inital grid
-        p.draw(window) ##Drawing player on grid
-        p.move() ## Movement for player
+
+    while Selection:
+        clock.tick(30)
+        print_game_grid()  ##Drawing inital grid
         for key in game_dictionary.keys():
             for count, index in enumerate(game_dictionary[key]):
                 game_grid.changeColor(game_dictionary[key][count])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                Selection = False
+                run = False
+                pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            Selection = False
+
+
+
+        pygame.display.update()
+
+    p = Player(playerX, playerY, 50, 50, grey)
+    while run:
+        clock.tick(30)
+        print_game_grid() ##Drawing inital grid
+        p.draw(window) ##Drawing player on grid
+        p.move() ## Movement for player
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
 
 
-        pygame.display.update()
+
 
 main()
