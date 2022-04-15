@@ -1,3 +1,12 @@
+# Admiral Acknownledgement Client To Do:
+# 1.) Create Board
+#   a.) Allow Board to be randomly generated
+# 2.) Player starting point
+# 3.) Player Movement
+#   a.) Ask user for there next move
+#   b.) Validate players movement
+# ...
+
 import socket
 import pygame
 import time
@@ -20,7 +29,8 @@ pygame.display.set_caption("Captain Admiral")
 
 DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
-font = pygame.font.Font('cour.ttf', 40)
+font1 = pygame.font.Font('cour.ttf', 40)
+font2 = pygame.font.Font('cour.ttf', 32)
 
 clientNumber = 0
 
@@ -46,13 +56,13 @@ def build_game_grid(array):
 def print_game_grid(array):
     counter = 85
     for x in range(65, 75, 1):
-        top_row_letters = font.render(chr(x), True, grey)
+        top_row_letters = font1.render(chr(x), True, grey)
         window.blit(top_row_letters, (counter, 0))
         counter += 100
 
     counter = 80
     for y in range(48, 58, 1):
-        side_row_numbers = font.render(chr(y), True, grey)
+        side_row_numbers = font1.render(chr(y), True, grey)
         window.blit(side_row_numbers, (5, counter))
         counter += 100
 
@@ -77,7 +87,7 @@ class Board():
         self.color = color
 
 
-class Player():
+class Subramine():
     def __init__(self, x, y, width, height, color):
         self.x = x
         self.y = y
@@ -118,9 +128,18 @@ def redrawWindow(p1, window):
 
 def main():
     run = True
-    p = Player(450, 450, 50, 100, (128,128,128))
+    p = Subramine(450, 450, 100, 100, (128,128,128))
     clock = pygame.time.Clock()
     build_game_grid(game_grid)
+    p1_coords = False
+    user_text = ''
+
+    input_coords = font2.render("Where would you like to start captain?", True, grey)
+    input_tooltip = font2.render("Please input a Coordinate. Ex: C6", True, grey)
+
+    user_x_coord = ''
+    user_y_coord = ''
+    valid_coords = False
 
     while run:
         clock.tick(30)
@@ -128,6 +147,19 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+            if event.type == pygame.KEYDOWN and not valid_coords:
+                user_text += event.unicode
+                if len(user_text) > 1:
+                    user_x_coord = user_text[0]
+                    user_y_coord = user_text[1]
+                    if user_x_coord >= 'A' and user_x_coord <= 'J' and user_y_coord >= '0' and user_y_coord <= '9':
+                        valid_coords = True
+
+            user_coords = font2.render(user_text, True, grey)
+            redrawWindow(p, window)
+            window.blit(input_coords, (1100, 40))
+            window.blit(input_tooltip, (1100,80))
+            window.blit(user_coords, (1100, 120))
         p.move()
         redrawWindow(p, window)
 
