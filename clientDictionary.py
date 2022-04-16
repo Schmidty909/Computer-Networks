@@ -186,7 +186,7 @@ def ValidateMovementX(x,key,keylocation,flag):
     ## moving player right
     else:
         ## checking right boundary isn't crossed
-        if x + 100 > game_dictionary["j"][9].x:
+        if x + 100 > game_dictionary["j"][9].x +25:
             return 0
         else:
             if game_dictionary[chr(ord(key) + 1)][keylocation].color == red or game_dictionary[chr(ord(key) + 1)][keylocation].color == green:
@@ -210,7 +210,7 @@ def ValidateMovementY(y,key,keylocation,flag):
     # moving player down
     else:
         # checking bottom boundary
-        if y + 100 > game_dictionary["j"][9].y:
+        if y + 100 > game_dictionary["j"][9].y +25:
             return 0
         else:
             if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
@@ -267,7 +267,7 @@ def main():
                     Selection = True
 
 
-    p = Player(playerX, playerY, Key, KeyPosition, 50, 50, grey)
+    p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
 
     while run:
         clock.tick(30)
