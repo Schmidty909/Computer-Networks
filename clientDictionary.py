@@ -94,7 +94,7 @@ class Player():
 
         if keys[pygame.K_LEFT]:
 
-           flag= ValidateMovementX(self.x,self.y,self.Key,self.location,0)
+           flag= ValidateMovementX(self.x,self.Key,self.location,0)
            if flag == 1:
                self.x -= 100
                game_dictionary[self.Key][self.location].color = red
@@ -104,7 +104,7 @@ class Player():
 
 
         if keys[pygame.K_RIGHT]:
-            flag = ValidateMovementX(self.x,self.y,self.Key, self.location,1)
+            flag = ValidateMovementX(self.x,self.Key, self.location,1)
             if flag == 1:
                 self.x +=100
                 game_dictionary[self.Key][self.location].color = red
@@ -114,7 +114,7 @@ class Player():
 
 
         if keys[pygame.K_UP]:
-            flag = ValidateMovementY(self.y,0)
+            flag = ValidateMovementY(self.y,self.Key, self.location,0)
             if flag == 1:
                 self.y -=100
                 game_dictionary[self.Key][self.location].color = red
@@ -124,7 +124,7 @@ class Player():
 
 
         if keys[pygame.K_DOWN]:
-            flag = ValidateMovementY(self.y,1)
+            flag = ValidateMovementY(self.y,self.Key, self.location,1)
             if flag == 1:
                 self.y +=100
                 game_dictionary[self.Key][self.location].color = red
@@ -171,32 +171,52 @@ def print_game_grid():
     for y in range(grid_length):
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
-def ValidateMovementX(x,y,key,keylocation,flag):
-    ## flag == 0 does X left movement
-
+def ValidateMovementX(x,key,keylocation,flag):
+    ## moving player left
     if flag == 0:
-        ## checking to make sure boundary isn't crossed
+        ## checking left boundary isn't crossed
         if x - 100 < game_dictionary["a"][0].x:
             return 0
         else:
-            return 1
+           if game_dictionary[chr(ord(key)-1)][keylocation].color == red or game_dictionary[chr(ord(key)-1)][keylocation].color == green:
+               return 0
+           else:
+               return 1
+
+    ## moving player right
     else:
+        ## checking right boundary isn't crossed
         if x + 100 > game_dictionary["j"][9].x:
             return 0
         else:
-            return 1
-def ValidateMovementY(y,flag):
+            if game_dictionary[chr(ord(key) + 1)][keylocation].color == red or game_dictionary[chr(ord(key) + 1)][keylocation].color == green:
+                return 0
+            else:
+                return 1
 
+
+def ValidateMovementY(y,key,keylocation,flag):
+    # moving player up
     if flag == 0:
+        # checking top boundary
         if y - 100 < game_dictionary["a"][0].y:
             return 0
         else:
-            return 1
+            if game_dictionary[key][keylocation-1].color == red or game_dictionary[key][keylocation-1].color == green:
+                return 0
+            else:
+                return 1
+
+    # moving player down
     else:
+        # checking bottom boundary
         if y + 100 > game_dictionary["j"][9].y:
             return 0
         else:
-            return 1
+            if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
+                return 0
+            else:
+                return 1
 
 
 
