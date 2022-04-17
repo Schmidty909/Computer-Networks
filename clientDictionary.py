@@ -2,8 +2,7 @@ import socket
 import pygame
 import time
 import random
-
-
+import tkinter.messagebox
 pygame.init()
 
 win_width = 1100
@@ -13,6 +12,7 @@ playerX = 0
 playerY = 0
 Key = "a"
 KeyPosition = 0
+move = True
 
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -89,52 +89,32 @@ class Player():
         pygame.draw.rect(window, self.color, self.rect)
 
 
-    def move(self,flag):
+    def move(self):
         keys = pygame.key.get_pressed()
+        global move
 
         if keys[pygame.K_LEFT]:
-
-           flag= ValidateMovementX(self.x,self.Key,self.location,0)
-           if flag == 1:
-               self.x -= 100
-               game_dictionary[self.Key][self.location].color = red
-               self.Key = chr(ord(self.Key) - 1)
-               print(self.Key)
-               print(self.location)
-
+           ValidateMovementX(self.x,self.Key,self.location,0)
 
         if keys[pygame.K_RIGHT]:
-            flag = ValidateMovementX(self.x,self.Key, self.location,1)
-            if flag == 1:
-                self.x +=100
-                game_dictionary[self.Key][self.location].color = red
-                self.Key = chr(ord(self.Key)+1)
-                print(self.Key)
-                print(self.location)
+             ValidateMovementX(self.x,self.Key, self.location,1)
 
 
         if keys[pygame.K_UP]:
-            flag = ValidateMovementY(self.y,self.Key, self.location,0)
-            if flag == 1:
-                self.y -=100
-                game_dictionary[self.Key][self.location].color = red
-                self.location = self.location - 1
-                print(self.Key)
-                print(self.location)
+            ValidateMovementY(self.y,self.Key, self.location,0)
 
 
         if keys[pygame.K_DOWN]:
-            flag = ValidateMovementY(self.y,self.Key, self.location,1)
-            if flag == 1:
-                self.y +=100
-                game_dictionary[self.Key][self.location].color = red
-                self.location = self.location + 1
-                print(self.Key)
-                print(self.location)
-
+            ValidateMovementY(self.y,self.Key, self.location,1)
 
 
         self.rect = (self.x , self.y, self.width, self.height)
+
+    def fire(self):
+        global move
+        move = True
+
+
 
 
 def build_game_grid():
@@ -172,6 +152,7 @@ def print_game_grid():
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 def ValidateMovementX(x,key,keylocation,flag):
+    global move
     ## moving player left
     if flag == 0:
         ## checking left boundary isn't crossed
@@ -179,10 +160,14 @@ def ValidateMovementX(x,key,keylocation,flag):
             return 0
         else:
            if game_dictionary[chr(ord(key)-1)][keylocation].color == red or game_dictionary[chr(ord(key)-1)][keylocation].color == green:
-               return 0
+               p.x = x
            else:
-               return 1
-
+               p.x -= 100
+               move = False
+               game_dictionary[key][keylocation].color = red
+               p.Key = chr(ord(key) - 1)
+               print(p.Key)
+               print(p.location)
     ## moving player right
     else:
         ## checking right boundary isn't crossed
@@ -190,12 +175,19 @@ def ValidateMovementX(x,key,keylocation,flag):
             return 0
         else:
             if game_dictionary[chr(ord(key) + 1)][keylocation].color == red or game_dictionary[chr(ord(key) + 1)][keylocation].color == green:
-                return 0
+                p.x = x
             else:
-                return 1
+                p.x +=100
+                move = False
+                game_dictionary[key][keylocation].color = red
+                p.Key = chr(ord(key)+1)
+                print(p.Key)
+                print(p.location)
+
 
 
 def ValidateMovementY(y,key,keylocation,flag):
+    global move
     # moving player up
     if flag == 0:
         # checking top boundary
@@ -203,9 +195,14 @@ def ValidateMovementY(y,key,keylocation,flag):
             return 0
         else:
             if game_dictionary[key][keylocation-1].color == red or game_dictionary[key][keylocation-1].color == green:
-                return 0
+                p.y = y
             else:
-                return 1
+                p.y -= 100
+                move = False
+                game_dictionary[key][keylocation].color = red
+                p.location = p.location - 1
+                print(p.Key)
+                print(p.location)
 
     # moving player down
     else:
@@ -216,7 +213,13 @@ def ValidateMovementY(y,key,keylocation,flag):
             if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
                 return 0
             else:
-                return 1
+                p.y +=100
+                move = False
+                game_dictionary[key][keylocation].color = red
+                p.location = p.location + 1
+                print(p.Key)
+                print(p.location)
+
 
 
 
@@ -236,6 +239,7 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
 
 def main():
     run = True
+
     Selection = True
     clock = pygame.time.Clock()
     build_game_grid()
@@ -267,13 +271,19 @@ def main():
                     Selection = True
 
 
+    global p
     p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
 
     while run:
         clock.tick(30)
         print_game_grid() ##Drawing inital grid
         p.draw(window) ##Drawing player on grid
-        p.move(0) ## Movement for player
+        if move == True:
+            p.move() ## Movement for player
+        else:
+           ## tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire", volume = 0)
+            p.fire()
+
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
