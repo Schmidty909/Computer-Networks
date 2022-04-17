@@ -1,12 +1,14 @@
 import socket
+import tkinter.dialog
+
 import pygame
 import time
 import random
-import tkinter.messagebox
+from tkinter import messagebox
 pygame.init()
 
-win_width = 1100
-win_height = 1100
+win_width = 1050
+win_height = 1050
 
 playerX = 0
 playerY = 0
@@ -19,11 +21,10 @@ green = (0, 255, 0)
 ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
-
 window = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Captain Admiral")
 
-
+DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 font = pygame.font.Font('cour.ttf', 40)
 
@@ -113,6 +114,7 @@ class Player():
     def fire(self):
         global move
         move = True
+        return False
 
 
 
@@ -211,7 +213,7 @@ def ValidateMovementY(y,key,keylocation,flag):
             return 0
         else:
             if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
-                return 0
+                p.y = y
             else:
                 p.y +=100
                 move = False
@@ -219,6 +221,14 @@ def ValidateMovementY(y,key,keylocation,flag):
                 p.location = p.location + 1
                 print(p.Key)
                 print(p.location)
+
+
+
+
+
+
+
+
 
 
 
@@ -237,9 +247,10 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
                    "j": [game_grid(950,50,"j",0),game_grid(950,150,"j",1),game_grid(950,250,"j",2),game_grid(950,350,"j",3),game_grid(950,450,"j",4),game_grid(950,550,"j",5),game_grid(950,650,"j",6),game_grid(950,750,"j",7),game_grid(950,850,"j",8),game_grid(950,950,"j",9)]
 }
 
+
+
 def main():
     run = True
-
     Selection = True
     clock = pygame.time.Clock()
     build_game_grid()
@@ -273,7 +284,7 @@ def main():
 
     global p
     p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
-
+    repeat = True
     while run:
         clock.tick(30)
         print_game_grid() ##Drawing inital grid
@@ -281,8 +292,26 @@ def main():
         if move == True:
             p.move() ## Movement for player
         else:
-           ## tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire", volume = 0)
-            p.fire()
+
+            #generating popup note location is static once in full screen mode it should be fine
+            # pop = Tk()
+            # pop.winfo_toplevel()
+            # pop_x = pop.winfo_x()
+            # pop_y = pop.winfo_y()
+            # win_x = pop_x + 1150
+            # win_y = pop_y + 500
+            # pop.geometry(f'+{win_x}+{win_y}')
+            # pop.title("My Popup")
+            # pop.geometry("250x150")
+            # pop.config(bg="black")
+            # pop_label = Label(pop, text="Chose a location to fire upon", bg="black", fg="white", font=("helvetica", 12))
+            # pop_label.pack(pady=50)
+            # pop.mainloop()
+            # p.fire()
+
+           #
+           # tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire")
+           p.fire()
 
         pygame.display.update()
         for event in pygame.event.get():
