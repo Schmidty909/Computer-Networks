@@ -62,13 +62,22 @@ class game_grid():
                 KeyPosition = self.location
                 playerX = self.x
                 playerY = self.y
-
-
-
         else:
             self.color = self.initalcolor
 
+    def Fire(self):
+        global FireKey
+        global FireLocation
 
+        Fireposition = pygame.mouse.get_pos()
+        if Fireposition[0] in range(self.rect.left,self.rect.right) and Fireposition[1] in range(self.rect.top, self.rect.bottom):
+            if(self.color != green):
+                self.color = red
+                FireKey = self.key
+                FireLocation = self.location
+
+        else:
+            self.color = self.initalcolor
 
 
 
@@ -111,10 +120,7 @@ class Player():
 
         self.rect = (self.x , self.y, self.width, self.height)
 
-    def fire(self):
-        global move
-        move = True
-        return False
+
 
 
 
@@ -167,9 +173,9 @@ def ValidateMovementX(x,key,keylocation,flag):
                p.x -= 100
                move = False
                game_dictionary[key][keylocation].color = red
+               game_dictionary[key][keylocation].initalcolor = red
                p.Key = chr(ord(key) - 1)
-               print(p.Key)
-               print(p.location)
+
     ## moving player right
     else:
         ## checking right boundary isn't crossed
@@ -182,9 +188,9 @@ def ValidateMovementX(x,key,keylocation,flag):
                 p.x +=100
                 move = False
                 game_dictionary[key][keylocation].color = red
+                game_dictionary[key][keylocation].initalcolor = red
                 p.Key = chr(ord(key)+1)
-                print(p.Key)
-                print(p.location)
+
 
 
 
@@ -202,9 +208,9 @@ def ValidateMovementY(y,key,keylocation,flag):
                 p.y -= 100
                 move = False
                 game_dictionary[key][keylocation].color = red
+                game_dictionary[key][keylocation].initalcolor = red
                 p.location = p.location - 1
-                print(p.Key)
-                print(p.location)
+
 
     # moving player down
     else:
@@ -218,20 +224,8 @@ def ValidateMovementY(y,key,keylocation,flag):
                 p.y +=100
                 move = False
                 game_dictionary[key][keylocation].color = red
+                game_dictionary[key][keylocation].initalcolor = red
                 p.location = p.location + 1
-                print(p.Key)
-                print(p.location)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -284,7 +278,7 @@ def main():
 
     global p
     p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
-    repeat = True
+
     while run:
         clock.tick(30)
         print_game_grid() ##Drawing inital grid
@@ -292,6 +286,14 @@ def main():
         if move == True:
             p.move() ## Movement for player
         else:
+            for key in game_dictionary.keys():
+                for count, index in enumerate(game_dictionary[key]):
+                    game_grid.Fire(game_dictionary[key][count])
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if window.get_at(pygame.mouse.get_pos()) == red:
+                    print(FireKey)
+                    print(FireLocation)
+
 
             #generating popup note location is static once in full screen mode it should be fine
             # pop = Tk()
@@ -311,7 +313,7 @@ def main():
 
            #
            # tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire")
-           p.fire()
+
 
         pygame.display.update()
         for event in pygame.event.get():
