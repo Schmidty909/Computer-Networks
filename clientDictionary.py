@@ -5,6 +5,9 @@ import pygame
 import time
 import random
 from tkinter import messagebox
+
+import pygame.mixer_music
+
 pygame.init()
 
 win_width = 1050
@@ -24,7 +27,7 @@ black = (0, 0, 0)
 window = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Captain Admiral")
 
-DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+#DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 font = pygame.font.Font('cour.ttf', 40)
 
@@ -243,7 +246,20 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
 
 
 
+
 def main():
+    # # Starting the mixer
+    # pygame.mixer.init()
+    #
+    # # Loading the song
+    # pygame.mixer.music.load(r"C:\Users\Juan\Downloads\cg5.mp3")
+    #
+    # # Setting the volume
+    # pygame.mixer.music.set_volume(0.7)
+    #
+    # # Start playing the song
+    # pygame.mixer.music.play()
+
     run = True
     Selection = True
     clock = pygame.time.Clock()
@@ -253,6 +269,8 @@ def main():
     while Selection:
         clock.tick(30)
         print_game_grid()  ##Drawing inital grid+
+        if pygame.mixer.music.get_busy() == False:
+            pygame.mixer_music.play()
 
         for key in game_dictionary.keys():
             for count, index in enumerate(game_dictionary[key]):
@@ -277,9 +295,12 @@ def main():
 
 
     global p
+    global move
     p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
 
     while run:
+        if pygame.mixer.music.get_busy() == False:
+            pygame.mixer_music.play()
         clock.tick(30)
         print_game_grid() ##Drawing inital grid
         p.draw(window) ##Drawing player on grid
@@ -290,8 +311,15 @@ def main():
                 for count, index in enumerate(game_dictionary[key]):
                     game_grid.Fire(game_dictionary[key][count])
             if event.type == pygame.MOUSEBUTTONDOWN:
+                print("MOUSE")
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     print(f"{FireKey}{FireLocation}")
+                    game_dictionary[FireKey][FireLocation].color = ocean_blue
+                    pygame.display.update()
+                    move = True
+
+
+
 
 
 
