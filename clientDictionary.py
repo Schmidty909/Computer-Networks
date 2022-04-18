@@ -314,7 +314,6 @@ def main():
            #
            # tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire")
 
-
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
