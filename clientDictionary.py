@@ -291,8 +291,8 @@ def main():
                     game_grid.Fire(game_dictionary[key][count])
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
-                    print(FireKey)
-                    print(FireLocation)
+                    print(f"{FireKey}{FireLocation}")
+
 
 
             #generating popup note location is static once in full screen mode it should be fine
