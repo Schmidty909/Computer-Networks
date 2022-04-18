@@ -5,8 +5,8 @@ import pygame
 import time
 import random
 from tkinter import messagebox
-
 import pygame.mixer_music
+
 
 pygame.init()
 
@@ -24,10 +24,12 @@ green = (0, 255, 0)
 ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
+
+
 window = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Captain Admiral")
 
-#DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 font = pygame.font.Font('cour.ttf', 40)
 
@@ -37,6 +39,11 @@ grid_width = 10
 grid_length = 10
 
 
+def text_format(message, textFont, textSize, textColor):
+    newFont=pygame.font.Font(textFont, textSize)
+    newText=newFont.render(message, 0, textColor)
+
+    return newText
 
 
 class game_grid():
@@ -248,17 +255,21 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
 
 
 def main():
+
+
     # # Starting the mixer
-    # pygame.mixer.init()
-    #
-    # # Loading the song
-    # pygame.mixer.music.load(r"C:\Users\Juan\Downloads\cg5.mp3")
-    #
-    # # Setting the volume
-    # pygame.mixer.music.set_volume(0.7)
-    #
+    pygame.mixer.init()
+
+    # Loading the song
+    pygame.mixer.music.load("cg5.mp3")
+
+    # Setting the volume
+    pygame.mixer.music.set_volume(0.7)
+
     # # Start playing the song
-    # pygame.mixer.music.play()
+    pygame.mixer.music.play()
+
+
 
     run = True
     Selection = True
@@ -351,3 +362,5 @@ def main():
 
 
 main()
+pygame.quit()
+quit()
