@@ -82,7 +82,6 @@ class game_grid():
         self.rect = pygame.draw.rect(window, self.color, [self.x, self.y , 100, 100])
         self.island = False
         self.has_player = False
-        self.already_been_here = False
     def hover(self):
         global playerX
         global playerY
@@ -109,6 +108,7 @@ class game_grid():
                 self.color = red
                 FireKey = self.key
                 FireLocation = self.location
+
 
         else:
             self.color = self.initalcolor
@@ -213,7 +213,11 @@ def ValidateMovementX(x,key,keylocation,flag):
     ## moving player right
     else:
         ## checking right boundary isn't crossed
-        if x + 100 > game_dictionary["j"][9].x +25:
+        for k in game_dictionary.keys():
+            for count, index in enumerate(game_dictionary[k]):
+                None
+
+        if x + 100 > game_dictionary[k][count].x +25:
             return 0
         else:
             if game_dictionary[chr(ord(key) + 1)][keylocation].color == red or game_dictionary[chr(ord(key) + 1)][keylocation].color == green:
@@ -249,7 +253,10 @@ def ValidateMovementY(y,key,keylocation,flag):
     # moving player down
     else:
         # checking bottom boundary
-        if y + 100 > game_dictionary["j"][9].y +25:
+        for k in game_dictionary.keys():
+            for count, index in enumerate(game_dictionary[k]):
+                None
+        if y + 100 > game_dictionary[k][count].y +25:
             return 0
         else:
             if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
@@ -432,8 +439,13 @@ def main():
                 print("MOUSE")
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     print(f"{FireKey}{FireLocation}")
-                    game_dictionary[FireKey][FireLocation].color = ocean_blue
-                    pygame.display.update()
+                    if game_dictionary[FireKey][FireLocation].initalcolor == red:
+                        game_dictionary[FireKey][FireLocation].color = red
+                        pygame.display.update()
+                    else:
+                        game_dictionary[FireKey][FireLocation].color = ocean_blue
+                        pygame.display.update()
+
                     move = True
 
         pygame.display.update()
