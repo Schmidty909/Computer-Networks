@@ -4,7 +4,7 @@ import tkinter.dialog
 import pygame
 import time
 import random
-from tkinter import messagebox
+
 
 import pygame.display
 import pygame.mixer_music
@@ -54,10 +54,10 @@ class Button():
         self.rect = (x, y, width, height)
     def draw(self):
         self.rect = pygame.draw.rect(window, self.color, [self.x - 50, self.y, 200, 50])
-    def hover(self):
+    def hover(self,color):
         position = pygame.mouse.get_pos()
         if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,self.rect.bottom):
-            self.color = ocean_blue
+            self.color = color
             window.blit(start, startRect)
             window.blit(text, textRect)
             window.blit(Quit, QuitRect)
@@ -299,8 +299,8 @@ def main_menu():
 
 
 def mainSelection():
-    StartButton.hover()
-    QuitButton.hover()
+    StartButton.hover(ocean_blue)
+    QuitButton.hover(red)
 
     pygame.display.update()
 
@@ -315,7 +315,7 @@ def main():
     QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
 
     while main:
-        clock.tick(30)
+        clock.tick(50)
 
         main_menu()
         StartButton.draw()
@@ -330,6 +330,18 @@ def main():
                 Selection = False
                 run = False
                 pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+                if window.get_at(pygame.mouse.get_pos()) == ocean_blue:
+                    main = False
+
+                    pygame.display.update()
+
+                if window.get_at(pygame.mouse.get_pos()) == red:
+
+                    main = False
+                    Selection = False
+                    run = False
+                    pygame.quit()
 
 
     # # Starting the mixer
@@ -401,30 +413,6 @@ def main():
                     game_dictionary[FireKey][FireLocation].color = ocean_blue
                     pygame.display.update()
                     move = True
-
-
-
-
-
-
-            #generating popup note location is static once in full screen mode it should be fine
-            # pop = Tk()
-            # pop.winfo_toplevel()
-            # pop_x = pop.winfo_x()
-            # pop_y = pop.winfo_y()
-            # win_x = pop_x + 1150
-            # win_y = pop_y + 500
-            # pop.geometry(f'+{win_x}+{win_y}')
-            # pop.title("My Popup")
-            # pop.geometry("250x150")
-            # pop.config(bg="black")
-            # pop_label = Label(pop, text="Chose a location to fire upon", bg="black", fg="white", font=("helvetica", 12))
-            # pop_label.pack(pady=50)
-            # pop.mainloop()
-            # p.fire()
-
-           #
-           # tkinter.messagebox.showerror(title="Prodical 69", message="Captian select your cordinates to fire")
 
         pygame.display.update()
         for event in pygame.event.get():
