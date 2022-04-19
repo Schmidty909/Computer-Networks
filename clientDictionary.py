@@ -328,7 +328,6 @@ def main_menu():
 
 
 
-
 def mainSelection():
     StartButton.hover(ocean_blue)
     QuitButton.hover(red)
