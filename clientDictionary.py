@@ -70,7 +70,6 @@ class Button():
             window.blit(Quit, QuitRect)
 
 
-
 class game_grid():
 
     def __init__(self,x,y,key,location):
