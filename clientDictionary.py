@@ -49,7 +49,7 @@ class Button():
         self.height = height
         self.text = text
         self.color = color
-        self.initalcolor = green
+        self.initalcolor = grey
         self.background = background
         self.rect = (x, y, width, height)
     def draw(self):
@@ -57,12 +57,16 @@ class Button():
     def hover(self):
         position = pygame.mouse.get_pos()
         if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,self.rect.bottom):
-            print("hello")
-            self.color = red
+            self.color = ocean_blue
+            window.blit(start, startRect)
+            window.blit(text, textRect)
+            window.blit(Quit, QuitRect)
 
         else:
-            print("int")
             self.color = self.initalcolor
+            window.blit(start, startRect)
+            window.blit(text, textRect)
+            window.blit(Quit, QuitRect)
 
 
 
@@ -275,41 +279,48 @@ def main_menu():
 
     global win_width
     global win_height
-
+    global  start, startRect, text, textRect, Quit, QuitRect
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
-    global  start, startRect, text, textRect
-    text = font.render("Admiral Acknowledge", True, white, black)
+
+    text = font.render("Admiral Acknowledge", True, white)
     textRect = text.get_rect()
     textRect.center = (win_width // 2, win_height // 2 - 150)
 
-    start = font.render("Start", True, red, black)
+    start = font.render("Start", True, white)
     startRect = start.get_rect()
-    startRect.center = (win_width // 2 + 160, win_height // 2 - 75)
+    startRect.center = (win_width // 2 , win_height // 2 - 75)
 
-    window.blit(start, startRect)
-    window.blit(text, textRect)
+    Quit = font.render("Quit", True, white)
+    QuitRect = Quit.get_rect()
+    QuitRect.center = (win_width // 2 , win_height // 2 )
+
+
 
 
 def mainSelection():
-    B.hover()
+    StartButton.hover()
+    QuitButton.hover()
+
     pygame.display.update()
-
-
 
 def main():
     main = True
     run = True
     Selection = True
     clock = pygame.time.Clock()
-    global  B
-    B = Button(470, 425, win_width, win_height, "Start", white, grey)
+    global  StartButton
+    global QuitButton
+    StartButton = Button(470, 425, win_width, win_height, "Start", white, grey)
+    QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
 
     while main:
         clock.tick(30)
 
         main_menu()
-        B.draw()
+        StartButton.draw()
+        QuitButton.draw()
+
         mainSelection()
         pygame.display.update()
 
