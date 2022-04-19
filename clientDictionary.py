@@ -5,6 +5,8 @@ import pygame
 import time
 import random
 from tkinter import messagebox
+
+import pygame.display
 import pygame.mixer_music
 
 
@@ -19,6 +21,7 @@ Key = "a"
 KeyPosition = 0
 move = True
 
+white = [255, 255, 255]
 red = (255, 0, 0)
 green = (0, 255, 0)
 ocean_blue = (0, 130, 150)
@@ -37,14 +40,31 @@ clientNumber = 0
 
 grid_width = 10
 grid_length = 10
-text = font.render('GeeksForGeeks', True, green, black)
 
-# create a rectangular object for the
-# text surface object
-textRect = text.get_rect()
+class Button():
+    def __init__(self,x,y,width,height, text,color,background):
+        self.x = x
+        self. y = y
+        self.width = width
+        self.height = height
+        self.text = text
+        self.color = color
+        self.initalcolor = green
+        self.background = background
+        self.rect = (x, y, width, height)
+    def draw(self):
+        self.rect = pygame.draw.rect(window, self.color, [self.x - 50, self.y, 200, 50])
+    def hover(self):
+        position = pygame.mouse.get_pos()
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,self.rect.bottom):
+            print("hello")
+            self.color = red
 
-# set the center of the rectangular object.
-textRect.center = (win_width // 2, win_height // 2)
+        else:
+            print("int")
+            self.color = self.initalcolor
+
+
 
 class game_grid():
 
@@ -252,19 +272,55 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
 }
 
 def main_menu():
-    global  win_width
-    global  win_height
-    top_row_letters = font.render("Juan's Game", True, grey,green)
+
+    global win_width
+    global win_height
+
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
-    window.blit(top_row_letters, textRect)
+    global  start, startRect, text, textRect
+    text = font.render("Admiral Acknowledge", True, white, black)
+    textRect = text.get_rect()
+    textRect.center = (win_width // 2, win_height // 2 - 150)
+
+    start = font.render("Start", True, red, black)
+    startRect = start.get_rect()
+    startRect.center = (win_width // 2 + 160, win_height // 2 - 75)
+
+    window.blit(start, startRect)
+    window.blit(text, textRect)
+
+
+def mainSelection():
+    B.hover()
     pygame.display.update()
+
 
 
 def main():
     main = True
+    run = True
+    Selection = True
+    clock = pygame.time.Clock()
+    global  B
+    B = Button(470, 425, win_width, win_height, "Start", white, grey)
+
     while main:
+        clock.tick(30)
+
         main_menu()
+        B.draw()
+        mainSelection()
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                main = False
+                Selection = False
+                run = False
+                pygame.quit()
+
+
     # # Starting the mixer
     pygame.mixer.init()
 
@@ -279,15 +335,13 @@ def main():
 
 
 
-    run = True
-    Selection = True
-    clock = pygame.time.Clock()
+
     build_game_grid()
 
 
     while Selection:
         clock.tick(30)
-        print_game_grid()  ##Drawing inital grid+
+        print_game_grid()  ##Drawing inital grid
         if pygame.mixer.music.get_busy() == False:
             pygame.mixer_music.play()
 
