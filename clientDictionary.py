@@ -29,7 +29,7 @@ black = (0, 0, 0)
 window = pygame.display.set_mode((win_width, win_height))
 pygame.display.set_caption("Captain Admiral")
 
-DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+#DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 font = pygame.font.Font('cour.ttf', 40)
 
@@ -37,14 +37,14 @@ clientNumber = 0
 
 grid_width = 10
 grid_length = 10
+text = font.render('GeeksForGeeks', True, green, black)
 
+# create a rectangular object for the
+# text surface object
+textRect = text.get_rect()
 
-def text_format(message, textFont, textSize, textColor):
-    newFont=pygame.font.Font(textFont, textSize)
-    newText=newFont.render(message, 0, textColor)
-
-    return newText
-
+# set the center of the rectangular object.
+textRect.center = (win_width // 2, win_height // 2)
 
 class game_grid():
 
@@ -251,12 +251,20 @@ game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_gri
                    "j": [game_grid(950,50,"j",0),game_grid(950,150,"j",1),game_grid(950,250,"j",2),game_grid(950,350,"j",3),game_grid(950,450,"j",4),game_grid(950,550,"j",5),game_grid(950,650,"j",6),game_grid(950,750,"j",7),game_grid(950,850,"j",8),game_grid(950,950,"j",9)]
 }
 
-
+def main_menu():
+    global  win_width
+    global  win_height
+    top_row_letters = font.render("Juan's Game", True, grey,green)
+    pygame.display.set_mode((win_width, win_height))
+    pygame.display.set_caption("Menu")
+    window.blit(top_row_letters, textRect)
+    pygame.display.update()
 
 
 def main():
-
-
+    main = True
+    while main:
+        main_menu()
     # # Starting the mixer
     pygame.mixer.init()
 
@@ -362,5 +370,4 @@ def main():
 
 
 main()
-pygame.quit()
-quit()
+
