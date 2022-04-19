@@ -304,6 +304,14 @@ def mainSelection():
 
     pygame.display.update()
 
+def fade(width, height):
+    window.fill((0,0,0))
+    for alpha in range(0, 300):
+        window.set_alpha(alpha)
+        window.blit(window, (0,0))
+        pygame.display.update()
+        pygame.time.delay(5)
+
 def main():
     main = True
     run = True
@@ -313,9 +321,23 @@ def main():
     global QuitButton
     StartButton = Button(470, 425, win_width, win_height, "Start", white, grey)
     QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
+    # # Starting the mixer
+    pygame.mixer.init()
+
+    # Loading the song
+    pygame.mixer.music.load("VaughnSlow.mp3")
+
+    # Setting the volume
+    pygame.mixer.music.set_volume(0.7)
+
+    # # Start playing the song
+    pygame.mixer.music.play()
 
     while main:
+
         clock.tick(50)
+        if pygame.mixer.music.get_busy() == False:
+            pygame.mixer_music.play()
 
         main_menu()
         StartButton.draw()
@@ -333,15 +355,15 @@ def main():
         if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == ocean_blue:
                     main = False
-
                     pygame.display.update()
-
+                    fade(win_width, win_height)
                 if window.get_at(pygame.mouse.get_pos()) == red:
 
                     main = False
                     Selection = False
                     run = False
                     pygame.quit()
+
 
 
     # # Starting the mixer
@@ -361,9 +383,9 @@ def main():
 
     build_game_grid()
 
-
     while Selection:
         clock.tick(30)
+
         print_game_grid()  ##Drawing inital grid
         if pygame.mixer.music.get_busy() == False:
             pygame.mixer_music.play()
