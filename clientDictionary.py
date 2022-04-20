@@ -166,7 +166,6 @@ def build_game_grid():
                 game_dictionary[key][count].island = True
 
 
-
 def print_game_grid():
     ## Loops to make Row and Column headers
     counter = 85
