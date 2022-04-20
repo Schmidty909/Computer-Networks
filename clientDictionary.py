@@ -156,7 +156,6 @@ class Player():
 
 
 
-
 def build_game_grid():
 
     for key in game_dictionary.keys():
