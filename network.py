@@ -9,10 +9,13 @@ class Network:
         self.server = "192.168.1.133"
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.id = self.connect()
-        print(self.id)
+        self.p = self.connect()
+
+
     def Board(self):
-        return self.id
+        return self.p
+    def playercount(self):
+        return  self.client.recv(20000).decode()
     def connect(self):
         try:
             self.client.connect(self.addr)
@@ -27,5 +30,5 @@ class Network:
         except socket.error as e:
             print(e)
 
-n = Network()
+
 

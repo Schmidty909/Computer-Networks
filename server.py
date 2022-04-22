@@ -62,23 +62,24 @@ class game_grid():
         self.initalcolor = ocean_blue
         self.island = False
 
-def threaded_client(conn):
-    print(game_dictionary)
-    jsonStr = jsonpickle.encode(game_dictionary)
 
+
+def threaded_client(conn, player):
+    jsonStr = jsonpickle.encode(game_dictionary)
+    player = str(player)
     conn.send(str.encode(jsonStr))
     reply = ""
     while True:
         try:
-            data = conn.recv(15000)
+
+            data = conn.recv(20000)
             reply = data.decode("utf-8")
+            if reply == "Count":
+                conn.send(str.encode(player))
             if not data:
                 print("Disconnected")
                 break
-            else:
-                print("Recevied: ", reply)
-                print("Sending: ",reply)
-            conn.sendall(str.encode(reply))
+
         except:
             break
     print("Lost Connection")
@@ -87,11 +88,13 @@ def threaded_client(conn):
 
 generate_dictionary()
 build_game_grid()
+currentPlayer = 1
 while True:
     conn, addr = s.accept()
     print("Connnected to:",addr)
 
-    start_new_thread(threaded_client, (conn,))
+    start_new_thread(threaded_client, (conn,currentPlayer))
+    currentPlayer += 1
 
 
 
