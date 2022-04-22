@@ -4,11 +4,11 @@ import tkinter.dialog
 import pygame
 import time
 import random
-
-
+from network import Network
 import pygame.display
 import pygame.mixer_music
-
+import jsonpickle
+global board
 
 pygame.init()
 
@@ -184,9 +184,9 @@ def print_game_grid():
         counter += 100
         side_numbers += 1
     ## Loops to make square pieces
-    for key in game_dictionary.keys():
-        for count,index in enumerate(game_dictionary[key]):
-            game_dictionary[key][count].rect = pygame.draw.rect(window, game_dictionary[key][count].color, [game_dictionary[key][count].x, game_dictionary[key][count].y , 100, 100])
+    for key in board.keys():
+        for count,index in enumerate(board[key]):
+            board[key][count].rect = pygame.draw.rect(window, board[key][count].color, [board[key][count].x, board[key][count].y , 100, 100])
     ## Loop to make the seperation between grid pieces
     for x in range(grid_width):
         pygame.draw.rect(window, black, (x * 100 + 50, 0, 2, win_height))
@@ -198,35 +198,35 @@ def ValidateMovementX(x,key,keylocation,flag):
     ## moving player left
     if flag == 0:
         ## checking left boundary isn't crossed
-        if x - 100 < game_dictionary["a"][0].x:
+        if x - 100 < board["a"][0].x:
             return 0
         else:
-           if game_dictionary[chr(ord(key)-1)][keylocation].color == red or game_dictionary[chr(ord(key)-1)][keylocation].color == green:
+           if board[chr(ord(key)-1)][keylocation].color == red or board[chr(ord(key)-1)][keylocation].color == green:
                p.x = x
            else:
                p.x -= 100
                move = False
-               game_dictionary[key][keylocation].color = red
-               game_dictionary[key][keylocation].initalcolor = red
+               board[key][keylocation].color = red
+               board[key][keylocation].initalcolor = red
                p.Key = chr(ord(key) - 1)
 
     ## moving player right
     else:
         ## checking right boundary isn't crossed
-        for k in game_dictionary.keys():
-            for count, index in enumerate(game_dictionary[k]):
+        for k in board.keys():
+            for count, index in enumerate(board[k]):
                 None
 
-        if x + 100 > game_dictionary[k][count].x +25:
+        if x + 100 > board[k][count].x +25:
             return 0
         else:
-            if game_dictionary[chr(ord(key) + 1)][keylocation].color == red or game_dictionary[chr(ord(key) + 1)][keylocation].color == green:
+            if board[chr(ord(key) + 1)][keylocation].color == red or board[chr(ord(key) + 1)][keylocation].color == green:
                 p.x = x
             else:
                 p.x +=100
                 move = False
-                game_dictionary[key][keylocation].color = red
-                game_dictionary[key][keylocation].initalcolor = red
+                board[key][keylocation].color = red
+                board[key][keylocation].initalcolor = red
                 p.Key = chr(ord(key)+1)
 
 
@@ -237,35 +237,35 @@ def ValidateMovementY(y,key,keylocation,flag):
     # moving player up
     if flag == 0:
         # checking top boundary
-        if y - 100 < game_dictionary["a"][0].y:
+        if y - 100 < board["a"][0].y:
             return 0
         else:
-            if game_dictionary[key][keylocation-1].color == red or game_dictionary[key][keylocation-1].color == green:
+            if board[key][keylocation-1].color == red or board[key][keylocation-1].color == green:
                 p.y = y
             else:
                 p.y -= 100
                 move = False
-                game_dictionary[key][keylocation].color = red
-                game_dictionary[key][keylocation].initalcolor = red
+                board[key][keylocation].color = red
+                board[key][keylocation].initalcolor = red
                 p.location = p.location - 1
 
 
     # moving player down
     else:
         # checking bottom boundary
-        for k in game_dictionary.keys():
-            for count, index in enumerate(game_dictionary[k]):
+        for k in board.keys():
+            for count, index in enumerate(board[k]):
                 None
-        if y + 100 > game_dictionary[k][count].y +25:
+        if y + 100 > board[k][count].y +25:
             return 0
         else:
-            if game_dictionary[key][keylocation+1].color == red or game_dictionary[key][keylocation+1].color == green:
+            if board[key][keylocation+1].color == red or board[key][keylocation+1].color == green:
                 p.y = y
             else:
                 p.y +=100
                 move = False
-                game_dictionary[key][keylocation].color = red
-                game_dictionary[key][keylocation].initalcolor = red
+                board[key][keylocation].color = red
+                board[key][keylocation].initalcolor = red
                 p.location = p.location + 1
 
 
@@ -287,17 +287,6 @@ def generate_dictionary():
 
 
 
-# game_dictionary = {"a": [game_grid(50,50,"a",0),game_grid(50,150,"a",1),game_grid(50,250,"a",2),game_grid(50,350,"a",3),game_grid(50,450,"a",4),game_grid(50,550,"a",5),game_grid(50,650,"a",6),game_grid(50,750,"a",7),game_grid(50,850,"a",8),game_grid(50,950,"a",9)],
-#                    "b": [game_grid(150,50,"b",0),game_grid(150,150,"b",1),game_grid(150,250,"b",2),game_grid(150,350,"b",3),game_grid(150,450,"b",4),game_grid(150,550,"b",5),game_grid(150,650,"b",6),game_grid(150,750,"b",7),game_grid(150,850,"b",8),game_grid(150,950,"b",9)],
-#                    "c": [game_grid(250,50,"c",0),game_grid(250,150,"c",1),game_grid(250,250,"c",2),game_grid(250,350,"c",3),game_grid(250,450,"c",4),game_grid(250,550,"c",5),game_grid(250,650,"c",6),game_grid(250,750,"c",7),game_grid(250,850,"c",8),game_grid(250,950,"c",9)],
-#                    "d": [game_grid(350,50,"d",0),game_grid(350,150,"d",1),game_grid(350,250,"d",2),game_grid(350,350,"d",3),game_grid(350,450,"d",4),game_grid(350,550,"d",5),game_grid(350,650,"d",6),game_grid(350,750,"d",7),game_grid(350,850,"d",8),game_grid(350,950,"d",9)],
-#                    "e": [game_grid(450,50,"e",0),game_grid(450,150,"e",1),game_grid(450,250,"e",2),game_grid(450,350,"e",3),game_grid(450,450,"e",4),game_grid(450,550,"e",5),game_grid(450,650,"e",6),game_grid(450,750,"e",7),game_grid(450,850,"e",8),game_grid(450,950,"e",9)],
-#                    "f": [game_grid(550,50,"f",0),game_grid(550,150,"f",1),game_grid(550,250,"f",2),game_grid(550,350,"f",3),game_grid(550,450,"f",4),game_grid(550,550,"f",5),game_grid(550,650,"f",6),game_grid(550,750,"f",7),game_grid(550,850,"f",8),game_grid(550,950,"f",9)],
-#                    "g": [game_grid(650,50,"g",0),game_grid(650,150,"g",1),game_grid(650,250,"g",2),game_grid(650,350,"g",3),game_grid(650,450,"g",4),game_grid(650,550,"g",5),game_grid(650,650,"g",6),game_grid(650,750,"g",7),game_grid(650,850,"g",8),game_grid(650,950,"g",9)],
-#                    "h": [game_grid(750,50,"h",0),game_grid(750,150,"h",1),game_grid(750,250,"h",2),game_grid(750,350,"h",3),game_grid(750,450,"h",4),game_grid(750,550,"h",5),game_grid(750,650,"h",6),game_grid(750,750,"h",7),game_grid(750,850,"h",8),game_grid(750,950,"h",9)],
-#                    "i": [game_grid(850,50,"i",0),game_grid(850,150,"i",1),game_grid(850,250,"i",2),game_grid(850,350,"i",3),game_grid(850,450,"i",4),game_grid(850,550,"i",5),game_grid(850,650,"i",6),game_grid(850,750,"i",7),game_grid(850,850,"i",8),game_grid(850,950,"i",9)],
-#                    "j": [game_grid(950,50,"j",0),game_grid(950,150,"j",1),game_grid(950,250,"j",2),game_grid(950,350,"j",3),game_grid(950,450,"j",4),game_grid(950,550,"j",5),game_grid(950,650,"j",6),game_grid(950,750,"j",7),game_grid(950,850,"j",8),game_grid(950,950,"j",9)]
-# }
 
 def main_menu():
 
@@ -336,7 +325,12 @@ def fade(width, height):
         pygame.time.delay(5)
 
 def main():
-    generate_dictionary()
+    n = Network()
+    global board
+    board = n.Board()
+    board = jsonpickle.loads(board)
+    print("This is the board: " , board)
+    #generate_dictionary()
     main = True
     run = True
     Selection = True
@@ -404,7 +398,7 @@ def main():
 
     pygame.display.set_caption("Captain Admiral")
 
-    build_game_grid()
+    #build_game_grid()
 
     while Selection:
         clock.tick(30)
