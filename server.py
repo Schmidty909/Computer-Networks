@@ -1,6 +1,7 @@
 import pygame
 import json
 import socket
+import random
 from _thread import *
 import sys
 import jsonpickle
@@ -41,7 +42,14 @@ def generate_dictionary():
         for y in range(grid_length ):
             list.append(game_grid(x* 100 + 50, y * 100 + 50, chr(character), position))
             position += 1
+def build_game_grid():
 
+    for key in game_dictionary.keys():
+        for count, index in enumerate(game_dictionary[key]):
+            if random.randrange(1, 11) == 10:
+                game_dictionary[key][count].color = green
+                game_dictionary[key][count].initalcolor = green
+                game_dictionary[key][count].island = True
 
 class game_grid():
 
@@ -78,6 +86,7 @@ def threaded_client(conn):
 
 
 generate_dictionary()
+build_game_grid()
 while True:
     conn, addr = s.accept()
     print("Connnected to:",addr)
