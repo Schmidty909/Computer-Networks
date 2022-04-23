@@ -311,11 +311,11 @@ def main():
     global playercount
     playercount = n.send("Count")
     print(playercount)
-
-
-
-
     main = True
+
+
+
+
     run = True
     Selection = True
     clock = pygame.time.Clock()

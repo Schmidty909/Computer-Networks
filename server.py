@@ -74,6 +74,9 @@ def threaded_client(conn, player):
 
             data = conn.recv(20000)
             reply = data.decode("utf-8")
+            information = {}
+            information[player] = reply
+            print(information)
             if reply == "Count":
                 conn.send(str.encode(player))
             if not data:
@@ -83,6 +86,7 @@ def threaded_client(conn, player):
         except:
             break
     print("Lost Connection")
+    print(information)
     conn.close()
 
 

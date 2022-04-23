@@ -10,12 +10,12 @@ class Network:
         self.port = 5555
         self.addr = (self.server, self.port)
         self.p = self.connect()
+        print(self.p)
 
 
     def Board(self):
         return self.p
-    def playercount(self):
-        return  self.client.recv(20000).decode()
+
     def connect(self):
         try:
             self.client.connect(self.addr)
