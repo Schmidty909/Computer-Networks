@@ -15,7 +15,7 @@ ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
 
-server= "192.168.1.99"
+server= "192.168.0.8"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,6 +41,7 @@ def generate_dictionary():
         for y in range(grid_length ):
             list.append(game_grid(x* 100 + 50, y * 100 + 50, chr(character), position))
             position += 1
+
 def build_game_grid():
 
     for key in game_dictionary.keys():
@@ -51,7 +52,6 @@ def build_game_grid():
                 game_dictionary[key][count].island = True
 
 class game_grid():
-
     def __init__(self,x,y,key,location):
         self.x = x
         self.y = y
@@ -61,21 +61,19 @@ class game_grid():
         self.initalcolor = ocean_blue
         self.island = False
 
-def threaded_client(conn):
-    print(game_dictionary)
+
+def threaded_client(conn, player):
     conn.send(pickle.dumps(game_dictionary))
-    reply = ""
     while True:
         try:
             data = pickle.loads(conn.recv(20000))
-            reply = " "
+            if data == "id":
+                x = str(player)
+                conn.send(x.encode("UTF-8"))
             if not data:
                 print("Disconnected")
                 break
-            else:
-                print("Recevied: ", reply)
-                print("Sending: ",reply)
-            conn.sendall(pickle.dumps(reply))
+            conn.sendall(pickle.dumps(data))
         except:
             break
     print("Lost Connection")
@@ -84,8 +82,12 @@ def threaded_client(conn):
 
 generate_dictionary()
 build_game_grid()
+playercount = 1
+
+
 while True:
     conn, addr = s.accept()
     print("Connnected to:",addr)
 
-    start_new_thread(threaded_client, (conn,))
+    start_new_thread(threaded_client, (conn, playercount))
+    playercount += 1
