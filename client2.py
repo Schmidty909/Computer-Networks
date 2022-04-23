@@ -10,11 +10,12 @@ import pygame.mixer_music
 import pickle
 global board
 
+# Initialize Pygame
 pygame.init()
+pygame.display.set_caption("Captain Admiral")
 
-win_width = 1100
-win_height = 1100
 
+# Global variables used for player position
 playerX = 0
 playerY = 0
 Key = "a"
@@ -22,6 +23,7 @@ KeyPosition = 0
 move = True
 
 
+# Color Definitions
 white = [255, 255, 255]
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -30,20 +32,22 @@ grey = (128, 128, 128)
 black = (0, 0, 0)
 
 
+# Variables used for generating pygame screen
+win_width = 1100
+win_height = 1100
 window = pygame.display.set_mode((win_width, win_height))
 
-##DISPLAYSURF = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
+# Initialization for font used in our game
 font = pygame.font.Font('cour.ttf', 40)
 
-clientNumber = 0
-# width can't be greater then 26
-# Length can't be greater then 9
+# Variables used to parse through the game board
 grid_width = 10
 grid_length = 10
 
+
 class Button():
-    def __init__(self,x,y,width,height, text,color,background):
+    def __init__(self, x, y, width, height, text, color, background):
         self.x = x
         self. y = y
         self.width = width
@@ -113,8 +117,6 @@ class game_grid():
             self.color = self.initalcolor
 
 
-
-
 class Player():
     def __init__(self,x,y,key, keylocation, width, height, color):
         self.x = x
@@ -150,24 +152,12 @@ class Player():
         self.rect = (self.x , self.y, self.width, self.height)
 
 
-
-
-def build_game_grid():
-
-    for key in board.keys():
-        for count, index in enumerate(board[key]):
-            if random.randrange(1, 11) == 10:
-                board[key][count].color = green
-                board[key][count].initalcolor = green
-                board[key][count].island = True
-
-
-def print_game_grid():
-    ## Loops to make Row and Column headers
+def draw_game_grid():
+    # Loops to make Row and Column headers
     counter = 85
     top_character = 65
     for x in range(grid_width):
-        top_row_letters = font.render(chr(top_character), True, grey)
+        top_row_letters = font.render(chr(top_character), True, white)
         window.blit(top_row_letters, (counter, 0))
         counter += 100
         top_character += 1
@@ -175,19 +165,20 @@ def print_game_grid():
     counter = 80
     side_numbers = 48
     for y in range(grid_length ):
-        side_row_numbers = font.render(chr(side_numbers), True, grey)
+        side_row_numbers = font.render(chr(side_numbers), True, white)
         window.blit(side_row_numbers, (5, counter))
         counter += 100
         side_numbers += 1
-    ## Loops to make square pieces
+    # Loops to make square pieces
     for key in board.keys():
         for count,index in enumerate(board[key]):
             board[key][count].rect = pygame.draw.rect(window, board[key][count].color, [board[key][count].x, board[key][count].y , 100, 100])
-    ## Loop to make the seperation between grid pieces
+    # Loop to make the seperation between grid pieces
     for x in range(grid_width):
         pygame.draw.rect(window, black, (x * 100 + 50, 0, 2, win_height))
     for y in range(grid_length):
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
+
 
 def ValidateMovementX(x,key,keylocation,flag):
     global move
@@ -224,8 +215,6 @@ def ValidateMovementX(x,key,keylocation,flag):
                 board[key][keylocation].color = red
                 board[key][keylocation].initalcolor = red
                 p.Key = chr(ord(key)+1)
-
-
 
 
 def ValidateMovementY(y,key,keylocation,flag):
@@ -265,25 +254,6 @@ def ValidateMovementY(y,key,keylocation,flag):
                 p.location = p.location + 1
 
 
-def generate_dictionary():
-    list = []
-    character = 97
-
-    for x in range(grid_width + 1):
-        board[chr(character)] = list
-        list = []
-        position = 0
-        character = 97
-        character += x
-        for y in range(grid_length ):
-            list.append(game_grid(x* 100 + 50, y * 100 + 50, chr(character), position))
-            position += 1
-
-
-
-
-
-
 def main_menu():
 
     global win_width
@@ -305,12 +275,12 @@ def main_menu():
     QuitRect.center = (win_width // 2 -25, win_height // 2-25 )
 
 
-
 def mainSelection():
     StartButton.hover(ocean_blue)
     QuitButton.hover(red)
 
     pygame.display.update()
+
 
 def fade(width, height):
     window.fill((0,0,0))
@@ -318,21 +288,32 @@ def fade(width, height):
         window.set_alpha(alpha)
         window.blit(window, (0,0))
         pygame.display.update()
-        pygame.time.delay(5)
+        pygame.time.delay(2)
+
 
 def main():
     n = Network()
+    id = n.send("id")
+    print(id)
+
     global board
     board = n.Board()
-    print(board)
-    print("This is the board: " , board)
-    #generate_dictionary()
+
+    # START BOARD DEBUG
+    # print(board)
+    # print("This is the board: " , board)
+    # END BOARD DEBUG
+
+    # print(n.send("playercount"))
+
     main = True
     run = True
     Selection = True
     clock = pygame.time.Clock()
-    global  StartButton
+    global StartButton
     global QuitButton
+
+    # Create start menu button objects
     StartButton = Button(470, 425, win_width, win_height, "Start", white, grey)
     QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
     # # # Starting the mixer
@@ -392,14 +373,10 @@ def main():
     # # # Start playing the song
     # pygame.mixer.music.play()
 
-    pygame.display.set_caption("Captain Admiral")
-
-    #build_game_grid()
-
     while Selection:
         clock.tick(30)
 
-        print_game_grid()  ##Drawing inital grid
+        draw_game_grid()  ##Drawing inital grid
         # if pygame.mixer.music.get_busy() == False:
         #     pygame.mixer_music.play()
 
@@ -433,10 +410,10 @@ def main():
         # if pygame.mixer.music.get_busy() == False:
         #     pygame.mixer_music.play()
         clock.tick(30)
-        print_game_grid() ##Drawing inital grid
-        p.draw(window) ##Drawing player on grid
+        draw_game_grid() # Drawing inital grid
+        p.draw(window) # Drawing player on grid
         if move == True:
-            p.move() ## Movement for player
+            p.move() # Movement for player
         else:
             for key in board.keys():
                 for count, index in enumerate(board[key]):
