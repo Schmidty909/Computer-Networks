@@ -7,7 +7,7 @@ import random
 from network import Network
 import pygame.display
 import pygame.mixer_music
-import jsonpickle
+import pickle
 global board
 
 pygame.init()
@@ -20,7 +20,7 @@ playerY = 0
 Key = "a"
 KeyPosition = 0
 move = True
-game_dictionary= {}
+
 
 white = [255, 255, 255]
 red = (255, 0, 0)
@@ -127,25 +127,21 @@ class Player():
         self.rect = (x, y, width, height)
         self.vel = 20
 
-
     def draw(self, window):
         pygame.draw.rect(window, self.color, self.rect)
-
 
     def move(self):
         keys = pygame.key.get_pressed()
         global move
 
         if keys[pygame.K_LEFT]:
-           ValidateMovementX(self.x,self.Key,self.location,0)
+            ValidateMovementX(self.x, self.Key, self.location, 0)
 
         if keys[pygame.K_RIGHT]:
-             ValidateMovementX(self.x,self.Key, self.location,1)
-
+            ValidateMovementX(self.x, self.Key, self.location, 1)
 
         if keys[pygame.K_UP]:
-            ValidateMovementY(self.y,self.Key, self.location,0)
-
+            ValidateMovementY(self.y, self.Key, self.location, 0)
 
         if keys[pygame.K_DOWN]:
             ValidateMovementY(self.y,self.Key, self.location,1)
@@ -158,12 +154,12 @@ class Player():
 
 def build_game_grid():
 
-    for key in game_dictionary.keys():
-        for count, index in enumerate(game_dictionary[key]):
+    for key in board.keys():
+        for count, index in enumerate(board[key]):
             if random.randrange(1, 11) == 10:
-                game_dictionary[key][count].color = green
-                game_dictionary[key][count].initalcolor = green
-                game_dictionary[key][count].island = True
+                board[key][count].color = green
+                board[key][count].initalcolor = green
+                board[key][count].island = True
 
 
 def print_game_grid():
@@ -274,7 +270,7 @@ def generate_dictionary():
     character = 97
 
     for x in range(grid_width + 1):
-        game_dictionary[chr(character)] = list
+        board[chr(character)] = list
         list = []
         position = 0
         character = 97
@@ -328,7 +324,7 @@ def main():
     n = Network()
     global board
     board = n.Board()
-    board = jsonpickle.loads(board)
+    print(board)
     print("This is the board: " , board)
     #generate_dictionary()
     main = True
@@ -407,9 +403,9 @@ def main():
         # if pygame.mixer.music.get_busy() == False:
         #     pygame.mixer_music.play()
 
-        for key in game_dictionary.keys():
-            for count, index in enumerate(game_dictionary[key]):
-                game_grid.hover(game_dictionary[key][count])
+        for key in board.keys():
+            for count, index in enumerate(board[key]):
+                game_grid.hover(board[key][count])
 
         pygame.display.update()
 
@@ -422,7 +418,7 @@ def main():
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     Selection = False
 
-                    game_dictionary[Key][KeyPosition].color = ocean_blue
+                    board[Key][KeyPosition].color = ocean_blue
                     pygame.display.update()
 
                 else:
@@ -442,17 +438,17 @@ def main():
         if move == True:
             p.move() ## Movement for player
         else:
-            for key in game_dictionary.keys():
-                for count, index in enumerate(game_dictionary[key]):
-                    game_grid.Fire(game_dictionary[key][count])
+            for key in board.keys():
+                for count, index in enumerate(board[key]):
+                    game_grid.Fire(board[key][count])
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     print(f"{FireKey}{FireLocation}")
-                    if game_dictionary[FireKey][FireLocation].initalcolor == red:
-                        game_dictionary[FireKey][FireLocation].color = red
+                    if board[FireKey][FireLocation].initalcolor == red:
+                        board[FireKey][FireLocation].color = red
                         pygame.display.update()
                     else:
-                        game_dictionary[FireKey][FireLocation].color = ocean_blue
+                        board[FireKey][FireLocation].color = ocean_blue
                         pygame.display.update()
 
                     move = True

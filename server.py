@@ -1,10 +1,9 @@
 import pygame
-import json
 import socket
 import random
 from _thread import *
 import sys
-import jsonpickle
+import pickle
 game_dictionary = {}
 grid_width = 10
 grid_length = 10
@@ -16,7 +15,7 @@ ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
 
-server= "192.168.1.133"
+server= "192.168.1.99"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,21 +63,19 @@ class game_grid():
 
 def threaded_client(conn):
     print(game_dictionary)
-    jsonStr = jsonpickle.encode(game_dictionary)
-
-    conn.send(str.encode(jsonStr))
+    conn.send(pickle.dumps(game_dictionary))
     reply = ""
     while True:
         try:
-            data = conn.recv(15000)
-            reply = data.decode("utf-8")
+            data = pickle.loads(conn.recv(20000))
+            reply = " "
             if not data:
                 print("Disconnected")
                 break
             else:
                 print("Recevied: ", reply)
                 print("Sending: ",reply)
-            conn.sendall(str.encode(reply))
+            conn.sendall(pickle.dumps(reply))
         except:
             break
     print("Lost Connection")
@@ -92,7 +89,3 @@ while True:
     print("Connnected to:",addr)
 
     start_new_thread(threaded_client, (conn,))
-
-
-
-
