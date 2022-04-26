@@ -1,7 +1,6 @@
 import json
 import socket
-
-import jsonpickle
+import pickle
 
 class Network:
     def __init__(self):
@@ -9,26 +8,21 @@ class Network:
         self.server = "192.168.1.133"
         self.port = 5555
         self.addr = (self.server, self.port)
-        self.p = self.connect()
-        print(self.p)
-
-
+        self.id = self.connect()
     def Board(self):
-        return self.p
-
+        return self.id
     def connect(self):
         try:
             self.client.connect(self.addr)
-            return self.client.recv(20000).decode()
+            return pickle.loads(self.client.recv(20000))
 
         except:
             pass
     def send(self,data):
         try:
-            self.client.send(str.encode(data))
-            return self.client.recv(20000).decode()
+            self.client.send(pickle.dumps(data))
+            return self.client.recv(20000).decode("UTF-8")
         except socket.error as e:
             print(e)
-
-
-
+n = Network()
+print(n.send("id"))

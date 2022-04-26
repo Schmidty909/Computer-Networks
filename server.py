@@ -1,13 +1,16 @@
 import pygame
-import json
 import socket
 import random
 from _thread import *
 import sys
-import jsonpickle
+import pickle
+import Game
 game_dictionary = {}
 grid_width = 10
 grid_length = 10
+connected = set()
+games = {}
+idCount = 0
 
 white = [255, 255, 255]
 red = (255, 0, 0)
@@ -62,44 +65,44 @@ class game_grid():
         self.initalcolor = ocean_blue
         self.island = False
 
-
-
-def threaded_client(conn, player):
-    jsonStr = jsonpickle.encode(game_dictionary)
-    player = str(player)
-    conn.send(str.encode(jsonStr))
-    reply = ""
+def threaded_client(conn, player,gameId):
+    global idCount
+    conn.send(pickle.dumps(game_dictionary))
     while True:
         try:
-
-            data = conn.recv(20000)
-            reply = data.decode("utf-8")
-            information = {}
-            information[player] = reply
-            print(information)
-            if reply == "Count":
-                conn.send(str.encode(player))
+            data = pickle.loads(conn.recv(20000))-
+            if data == "id":
+                X = str(player)
+                conn.send(X.encode("UTF-8"))
             if not data:
                 print("Disconnected")
                 break
 
+            conn.sendall(pickle.dumps(data))
         except:
             break
     print("Lost Connection")
-    print(information)
     conn.close()
 
 
 generate_dictionary()
 build_game_grid()
-currentPlayer = 1
+
 while True:
     conn, addr = s.accept()
-    print("Connnected to:",addr)
+    print("Connected to:", addr)
+    idCount +=1
+    playercount = 1
+    gameId = (idCount - 1)//2
+    if idCount % 2 == 1:
+        games[gameId] = Game(gameId)
+        print("creating new game")
+    else:
+        games[gameId].ready = True
+        playercount = 2
 
-    start_new_thread(threaded_client, (conn,currentPlayer))
-    currentPlayer += 1
 
 
-
+    start_new_thread(threaded_client, (conn, playercount,gameId))
+    playercount += 1
 
