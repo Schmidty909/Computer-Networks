@@ -16,7 +16,7 @@ ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
 
-server = "192.168.0.15"
+server = "192.168.1.99"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
