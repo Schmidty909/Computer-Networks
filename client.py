@@ -8,6 +8,8 @@ from network import Network
 import pygame.display
 import pygame.mixer_music
 import pickle
+
+
 global board
 
 # Initialize Pygame
@@ -24,7 +26,7 @@ move = True
 
 
 # Color Definitions
-white = [255, 255, 255]
+white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 ocean_blue = (0, 130, 150)
@@ -33,7 +35,7 @@ black = (0, 0, 0)
 
 
 # Variables used for generating pygame screen
-win_width = 1100
+win_width = 1600
 win_height = 1100
 window = pygame.display.set_mode((win_width, win_height))
 
@@ -68,7 +70,6 @@ class Button():
             window.blit(start, startRect)
             window.blit(text, textRect)
             window.blit(Quit, QuitRect)
-
         else:
             self.color = self.initalcolor
             window.blit(start, startRect)
@@ -152,6 +153,8 @@ class Player():
 
 
 def draw_game_grid():
+
+    global board
     # Loops to make Row and Column headers
     counter = 85
     top_character = 65
@@ -179,7 +182,7 @@ def draw_game_grid():
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 
-def ValidateMovementX(x,key,keylocation,flag):
+def ValidateMovementX(x, key, keylocation, flag):
     global move
     # Moving player left
     if flag == 0:
@@ -216,7 +219,7 @@ def ValidateMovementX(x,key,keylocation,flag):
                 p.Key = chr(ord(key)+1)
 
 
-def ValidateMovementY(y,key,keylocation,flag):
+def ValidateMovementY(y, key, keylocation, flag):
     global move
     # Moving player up
     if flag == 0:
@@ -257,7 +260,7 @@ def main_menu():
 
     global win_width
     global win_height
-    global  start, startRect, text, textRect, Quit, QuitRect
+    global start, startRect, text, textRect, Quit, QuitRect
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
 
@@ -282,7 +285,7 @@ def mainSelection():
 
 
 def fade(width, height):
-    window.fill((0,0,0))
+    window.fill((0, 0, 0))
     for alpha in range(0, 300):
         window.set_alpha(alpha)
         window.blit(window, (0,0))
@@ -293,9 +296,22 @@ def fade(width, height):
 def main():
     n = Network()
 
+    # Fethc our board, if we return a board that is none, try again.
     global board
+    getboard = False
+
+    # while not getboard:
+    #     print("Fetching Board...")
+    #     board = n.getBoard()
+    #     if board is None:
+    #         board = n.tryboard("board")
+    #     else:
+    #         getboard = True
+
     board = n.getBoard()
 
+
+    # Fetch our Player ID. Make sure it returns with 1 or 2.
     getid = True
 
     while getid:
@@ -303,36 +319,24 @@ def main():
         if id != "1" and id != "2":
             print("ID retrieval was unsuccessful... Trying again")
         else:
-            print(id)
+            print("You are player: ", id)
             getid = False
 
     main = True
     run = True
     Selection = True
     clock = pygame.time.Clock()
+
     global StartButton
     global QuitButton
 
     # Create start menu button objects
-    StartButton = Button(470, 425, win_width, win_height, "Start", white, grey)
-    QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
-    # # # Starting the mixer
-    # pygame.mixer.init()
-    #
-    # # Loading the song
-    # pygame.mixer.music.load("VaughnSlow.mp3")
-    #
-    # # Setting the volume
-    # pygame.mixer.music.set_volume(0.7)
-    #
-    # # # Start playing the song
-    # pygame.mixer.music.play()
+    StartButton = Button(win_width / 2 - 75, 425, win_width, win_height, "Start", white, grey)
+    QuitButton = Button(win_width / 2 - 75, 500, win_width, win_height, "Quit", white, grey)
 
     while main:
 
-        clock.tick(50)
-        # if pygame.mixer.music.get_busy() == False:
-        #     pygame.mixer_music.play()
+        clock.tick(30)
 
         main_menu()
         StartButton.draw()
@@ -353,37 +357,27 @@ def main():
                     pygame.display.update()
                     fade(win_width, win_height)
                 if window.get_at(pygame.mouse.get_pos()) == red:
-
                     main = False
                     Selection = False
                     run = False
                     pygame.quit()
 
-
-
-    # # # Starting the mixer
-    # pygame.mixer.init()
-    #
-    # # Loading the song
-    # pygame.mixer.music.load("cg5.mp3")
-    #
-    # # Setting the volume
-    # pygame.mixer.music.set_volume(0.7)
-    #
-    # # # Start playing the song
-    # pygame.mixer.music.play()
-
+    # Loop to have player select there starting position
     while Selection:
         clock.tick(30)
 
-        draw_game_grid()  ##Drawing inital grid
-        # if pygame.mixer.music.get_busy() == False:
-        #     pygame.mixer_music.play()
+        # Draw initial grid
+        draw_game_grid()
 
         for key in board.keys():
             for count, index in enumerate(board[key]):
                 game_grid.hover(board[key][count])
 
+        # Choose starting position text
+        start_pos_text = font.render("Welcome Admiral!", True, white)
+        window.blit(start_pos_text, (1100, 20))
+
+        # Update our window
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -394,13 +388,10 @@ def main():
         if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     Selection = False
-
                     board[Key][KeyPosition].color = ocean_blue
                     pygame.display.update()
-
                 else:
                     Selection = True
-
 
     global p
     global move

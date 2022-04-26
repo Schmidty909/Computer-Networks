@@ -404,7 +404,7 @@ def main():
 
     global p
     global move
-    p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
+    p = Player(playerX + 25, playerY + 25, Key, KeyPosition, 50, 50, grey)
 
     while run:
         # if pygame.mixer.music.get_busy() == False:
