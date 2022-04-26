@@ -4,28 +4,29 @@ import random
 from _thread import *
 import sys
 import pickle
+
 game_dictionary = {}
 grid_width = 10
 grid_length = 10
 
-white = [255, 255, 255]
+white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 ocean_blue = (0, 130, 150)
 grey = (128, 128, 128)
 black = (0, 0, 0)
 
-server= "192.168.0.8"
+server= "192.168.1.99"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((server,port))
+    s.bind((server, port))
 except socket.error as e:
     str(e)
 
-s.listen(2)
+s.listen()
 print("Waiting for connection, server started")
 
 def generate_dictionary():
@@ -66,14 +67,18 @@ def threaded_client(conn, player):
     conn.send(pickle.dumps(game_dictionary))
     while True:
         try:
-            data = pickle.loads(conn.recv(20000))
+            #data = pickle.loads(conn.recv(30000))
+            print("before")
+            data = conn.recv(1024).decode()
+            print("after")
             if data == "id":
                 x = str(player)
-                conn.send(x.encode("UTF-8"))
+                # conn.send(x.encode("UTF-8"))
             if not data:
                 print("Disconnected")
                 break
-            conn.sendall(pickle.dumps(data))
+            # conn.sendall(pickle.dumps(data))
+            conn.sendall(str.encode(x))
         except:
             break
     print("Lost Connection")
@@ -90,4 +95,6 @@ while True:
     print("Connnected to:",addr)
 
     start_new_thread(threaded_client, (conn, playercount))
+    if(playercount == 2):
+        playercount = 0
     playercount += 1

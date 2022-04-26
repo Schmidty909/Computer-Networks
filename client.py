@@ -57,8 +57,10 @@ class Button():
         self.initalcolor = grey
         self.background = background
         self.rect = (x, y, width, height)
+
     def draw(self):
         self.rect = pygame.draw.rect(window, self.color, [self.x - 50, self.y, 200, 50])
+
     def hover(self,color):
         position = pygame.mouse.get_pos()
         if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,self.rect.bottom):
@@ -75,8 +77,7 @@ class Button():
 
 
 class game_grid():
-
-    def __init__(self,x,y,key,location):
+    def __init__(self, x, y, key, location):
         self.x = x
         self.y = y
         self.key = key
@@ -85,6 +86,7 @@ class game_grid():
         self.initalcolor = ocean_blue
         self.rect = pygame.draw.rect(window, self.color, [self.x, self.y , 100, 100])
         self.island = False
+
     def hover(self):
         global playerX
         global playerY
@@ -111,14 +113,12 @@ class game_grid():
                 self.color = red
                 FireKey = self.key
                 FireLocation = self.location
-
-
         else:
             self.color = self.initalcolor
 
 
 class Player():
-    def __init__(self,x,y,key, keylocation, width, height, color):
+    def __init__(self, x, y, key, keylocation, width, height, color):
         self.x = x
         self.y = y
         self.Key = key
@@ -147,7 +147,6 @@ class Player():
 
         if keys[pygame.K_DOWN]:
             ValidateMovementY(self.y,self.Key, self.location,1)
-
 
         self.rect = (self.x , self.y, self.width, self.height)
 
@@ -182,9 +181,9 @@ def draw_game_grid():
 
 def ValidateMovementX(x,key,keylocation,flag):
     global move
-    ## moving player left
+    # Moving player left
     if flag == 0:
-        ## checking left boundary isn't crossed
+        # Checking left boundary isn't crossed
         if x - 100 < board["a"][0].x:
             return 0
         else:
@@ -197,9 +196,9 @@ def ValidateMovementX(x,key,keylocation,flag):
                board[key][keylocation].initalcolor = red
                p.Key = chr(ord(key) - 1)
 
-    ## moving player right
+    # Moving player right
     else:
-        ## checking right boundary isn't crossed
+        # Checking right boundary isn't crossed
         for k in board.keys():
             for count, index in enumerate(board[k]):
                 None
@@ -219,9 +218,9 @@ def ValidateMovementX(x,key,keylocation,flag):
 
 def ValidateMovementY(y,key,keylocation,flag):
     global move
-    # moving player up
+    # Moving player up
     if flag == 0:
-        # checking top boundary
+        # Checking top boundary
         if y - 100 < board["a"][0].y:
             return 0
         else:
@@ -235,9 +234,9 @@ def ValidateMovementY(y,key,keylocation,flag):
                 p.location = p.location - 1
 
 
-    # moving player down
+    # Moving player down
     else:
-        # checking bottom boundary
+        # Checking bottom boundary
         for k in board.keys():
             for count, index in enumerate(board[k]):
                 None
@@ -247,7 +246,7 @@ def ValidateMovementY(y,key,keylocation,flag):
             if board[key][keylocation+1].color == red or board[key][keylocation+1].color == green:
                 p.y = y
             else:
-                p.y +=100
+                p.y += 100
                 move = False
                 board[key][keylocation].color = red
                 board[key][keylocation].initalcolor = red
@@ -293,18 +292,19 @@ def fade(width, height):
 
 def main():
     n = Network()
-    id = n.send("id")
-    print(id)
 
     global board
-    board = n.Board()
+    board = n.getBoard()
 
-    # START BOARD DEBUG
-    # print(board)
-    # print("This is the board: " , board)
-    # END BOARD DEBUG
+    getid = True
 
-    # print(n.send("playercount"))
+    while getid:
+        id = n.send("id")
+        if id != "1" and id != "2":
+            print("ID retrieval was unsuccessful... Trying again")
+        else:
+            print(id)
+            getid = False
 
     main = True
     run = True
@@ -404,7 +404,7 @@ def main():
 
     global p
     global move
-    p = Player(playerX +25, playerY +25, Key, KeyPosition, 50, 50, grey)
+    p = Player(playerX + 25, playerY + 25, Key, KeyPosition, 50, 50, grey)
 
     while run:
         # if pygame.mixer.music.get_busy() == False:
