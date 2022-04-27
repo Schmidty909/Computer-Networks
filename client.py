@@ -218,8 +218,6 @@ def main_menu():
 
     global win_width
     global win_height
-    win_width = 1100
-    win_height = 1100
     global start, startRect, text, textRect, Quit, QuitRect
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
@@ -351,6 +349,7 @@ def main():
 
         # Draw initial grid
         draw_game_grid()
+        printStartingText()
 
         for key in board.keys():
             for count, index in enumerate(board[key]):
