@@ -335,10 +335,11 @@ def main():
     # Start game
     while run:
         clock.tick(30)
+        window.fill(black)
         draw_game_grid() # Drawing inital grid
         p.draw(window) # Drawing player on grid
         if move == True:
-            p.move(board,p) # Movement for player
+            p.move(board, p) # Movement for player
             # print(p.position)             # Debug player position
         else:
             for key in board.keys():

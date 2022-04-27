@@ -6,7 +6,7 @@ import pickle
 
 grey = (128, 128, 128)
 
-server = "192.168.1.133"
+server = "192.168.0.8"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,7 +16,7 @@ try:
 except socket.error as e:
     str(e)
 
-s.listen(2)
+s.listen()
 print("Waiting for connection, server started")
 
 
@@ -31,7 +31,7 @@ class gameLogic:
         self.ready = False
 
 
-players = [Player(0, 0, "a", 9 , 50, 50, grey), Player(0, 0, "a", 10, 50, 50, grey)]
+players = [Player(0, 0, "a", 9, 50, 50, grey), Player(0, 0, "a", 9, 50, 50, grey)]
 
 
 def threaded_client(conn, playerCount):
