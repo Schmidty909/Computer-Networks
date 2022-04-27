@@ -403,18 +403,18 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p1Hit = p.hit
                         game.p1Coords = str(p.position)
-                        
-                        Coords = ("p1Coords:" + p.position)
-                        game.p1Coords = n.send(Coords)
-                        test = ("p1Hit:" + p.hit)
-                        game.p1Hit = n.send(test)
-                        
+
+                        x = ("p1Coords:" + p.position)
+                        game.p1Coords = n.send(x)
+                        y = ("p1Hit:" + p.hit)
+                        game.p1Hit = n.send(y)
+
                         game.p2Coords = n.send("getP2Coords")
                         game.p2Hit = n.send("getP2Hit")
-                        
+
                         print(game.p2Coords)
                         print(game.p2Hit)
-                        
+
                         if localp1Turn == True:
                             move = True
                             if pDone == True:
@@ -433,10 +433,16 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p2Hit = p.hit
                         game.p2Coords = p.position
-                        Coords = ("p2Coords:" + p.position)
-                        game.p1Coords = n.send(Coords)
-                        test = ("p2Hit:" + p.hit)
-                        game.p1Hit = n.send(test)
+
+                        x = ("p2Coords:" + p.position)
+                        game.p1Coords = n.send(x)
+                        y = ("p2Hit:" + p.hit)
+                        game.p1Hit = n.send(y)
+
+                        game.p1Coords = n.send("getP1Coords")
+                        game.p1Hit = n.send("getP1Hit")
+
+
                         if localp2Turn == True:
                             move = True
                             if pDone == True:
