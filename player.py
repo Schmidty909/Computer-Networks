@@ -17,23 +17,22 @@ class Player():
         self.hit = ""
         self.position = str(self.Key) + str(self.location)
         self.ourTurn = False
+        self.winner = False
 
     def draw(self, window):
         pygame.draw.rect(window, self.color, self.rect)
 
-    def move(self,board,p):
+    def move(self, board, p, move):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            ValidateMovementX(self.x, self.Key, self.location, 0, board,p)
-
+            move = ValidateMovementX(self.x, self.Key, self.location, 0, board, p, move)
         if keys[pygame.K_RIGHT]:
-            ValidateMovementX(self.x, self.Key, self.location, 1, board,p)
-
+            move = ValidateMovementX(self.x, self.Key, self.location, 1, board, p, move)
         if keys[pygame.K_UP]:
-            ValidateMovementY(self.y, self.Key, self.location, 0, board,p)
-
+            move = ValidateMovementY(self.y, self.Key, self.location, 0, board, p, move)
         if keys[pygame.K_DOWN]:
-            ValidateMovementY(self.y,self.Key, self.location, 1, board,p)
+            move = ValidateMovementY(self.y,self.Key, self.location, 1, board, p, move)
 
         self.rect = (self.x, self.y, self.width, self.height)
+        return move
