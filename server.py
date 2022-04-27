@@ -20,17 +20,17 @@ s.listen()
 print("Waiting for connection, server started")
 
 
-class gameLogic:
+class game:
     def __init__(self):
-        self.p1Went = False
-        self.p2Went = True
+        self.p1Turn = True
+        self.p2Turn = False
         self.playerCoords = [" ", " "]
         self.playerHits = [" ", " "]
         self.player1moves = []
         self.player2moves = []
-        self.ready = False
+        self.winner = -1
 
-
+Game = game()
 players = [Player(0, 0, "a", 9, 50, 50, grey), Player(0, 0, "a", 9, 50, 50, grey)]
 
 
@@ -40,17 +40,42 @@ def threaded_client(conn, playerCount):
     while True:
         try:
             # Read the object sent to us
-            data = pickle.loads(conn.recv(2048))
-            # Store the object we received into our array
+            data = pickle.loads(conn.recv(30000))
             players[playerCount] = data
+            # Store the object we received into our array
             if not data:
                 print("Disconnected")
                 break
             else:
-                if playerCount == 1:
-                    reply = players[0]
-                else:
+                if players[0].move == False and players[0].Fired == True:
+                    players[1].move = True
+                    players[1].Fired = False
                     reply = players[1]
+                if players[1].move == False and players[1].Fired == True:
+                    players[0].move = True
+                    players[0].Fired = False
+                    reply = players[0]
+                # if playerCount == 0 and players[1].ourTurn == False:
+                #     players[0].ourTurn = False
+                #     players[1].ourTurn = True
+                #     Game.playerCoords[0] = players[0].position
+                #     Game.playerHits[0] = players[0].hit
+                #     players[0].playerid = 0
+                #     if Game.playerHits[0] == Game.playerCoords[1]:
+                #         Game.p1Turn = False
+                #         Game.p2Turn = False
+                #         Game.winner = 0
+                #         players[0].winner = True
+                #     reply = players[0]
+                # if playerCount == 1 and players[0].ourTurn == False:
+                #     players[1].ourTurn = False
+                #     players[0].ourTurn = True
+                #     Game.playerCoords[1] = players[1].position
+                #     Game.playerHits[1] = players[1].hit
+                #     players[1].playerid = 1
+                #     if Game.playerHits[1] == Game.playerCoords[0]:
+                #         players[1].winner = True
+                #     reply = players[1]
             conn.sendall(pickle.dumps(reply))
         except:
             break
@@ -59,7 +84,6 @@ def threaded_client(conn, playerCount):
 
 
 currentPlayer = 0
-
 
 while True:
     conn, addr = s.accept()
