@@ -369,9 +369,12 @@ def main():
     window.fill(black)
     draw_game_grid()
     pygame.display.update()
+    if playerID == 1:
+        while(not game.p2Turn):
+            print("Waiting for player 1...")
 
 
-    # Start game
+
     while run:
         clock.tick(30)
         window.fill(black)
@@ -394,7 +397,23 @@ def main():
                         board[FireKey][FireLocation].color = ocean_blue
                         pygame.display.update()
 
-                    move = True
+                    move = False
+                    if playerID == "0":
+                        game.p1Hit = p.hit
+                        game.p1Coords = p.position
+                        game.endTurn(0)
+                        if game.p1Turn == True:
+                            move = True
+                        else:
+                            print("Waiting for Player 2...")
+                        # while(not game.p1Turn):
+                        #     print("Waiting for Player 2...")
+                    if playerID == "1":
+                        game.p2Hit = p.hit
+                        game.p2Coords = p.position
+                        game.endTurn(1)
+                        # while(not game.p2Turn):
+                        #     print("Waiting for Player 1...")
 
 
         pygame.display.update()
