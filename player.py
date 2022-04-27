@@ -18,8 +18,8 @@ class Player():
         self.position = str(self.Key) + str(self.location)
         self.ourTurn = False
         self.winner = False
-        # self.Fired = False
-        # self.move = False
+        self.Fired = False
+        self.move = False
         self.playerid = -1
 
     def draw(self, window):
