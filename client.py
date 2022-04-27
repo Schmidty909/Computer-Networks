@@ -105,22 +105,24 @@ def draw_game_grid():
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 
-def ValidateMovementX(x, key, keylocation, flag,board,p):
+def ValidateMovementX(x, key, keylocation, flag, board, p, move):
     # Moving player left
     if flag == 0:
         # Checking left boundary isn't crossed
         if x - 100 < board["a"][0].x:
-            return 0
+            return True
         else:
            if board[chr(ord(key)-1)][keylocation].color == red or board[chr(ord(key)-1)][keylocation].color == green:
                p.x = x
+               return True
            else:
-               p.x -= 100
                move = False
+               p.x -= 100
                board[key][keylocation].color = red
                board[key][keylocation].initalcolor = red
                p.Key = chr(ord(key) - 1)
                p.position = p.Key + str(p.location)
+               return move
 
     # Moving player right
     else:
@@ -130,10 +132,11 @@ def ValidateMovementX(x, key, keylocation, flag,board,p):
                 None
 
         if x + 100 > board[k][count].x +25:
-            return 0
+            return True
         else:
             if board[chr(ord(key) + 1)][keylocation].color == red or board[chr(ord(key) + 1)][keylocation].color == green:
                 p.x = x
+                return True
             else:
                 p.x += 100
                 move = False
@@ -141,18 +144,20 @@ def ValidateMovementX(x, key, keylocation, flag,board,p):
                 board[key][keylocation].initalcolor = red
                 p.Key = chr(ord(key)+1)
                 p.position = p.Key + str(p.location)
+                return move
 
 
-def ValidateMovementY(y, key, keylocation, flag,board,p):
+def ValidateMovementY(y, key, keylocation, flag, board, p, move):
     # Moving player up+
 
     if flag == 0:
         # Checking top boundary
         if y - 100 < board["a"][0].y:
-            return 0
+            return True
         else:
             if board[key][keylocation-1].color == red or board[key][keylocation-1].color == green:
                 p.y = y
+                return True
             else:
                 p.y -= 100
                 move = False
@@ -160,6 +165,7 @@ def ValidateMovementY(y, key, keylocation, flag,board,p):
                 board[key][keylocation].initalcolor = red
                 p.location = p.location - 1
                 p.position = p.Key + str(p.location)
+                return move
 
 
     # Moving player down
@@ -169,10 +175,11 @@ def ValidateMovementY(y, key, keylocation, flag,board,p):
             for count, index in enumerate(board[k]):
                 None
         if y + 100 > board[k][count].y +25:
-            return 0
+            return True
         else:
             if board[key][keylocation+1].color == red or board[key][keylocation+1].color == green:
                 p.y = y
+                return True
             else:
                 p.y += 100
                 move = False
@@ -180,6 +187,7 @@ def ValidateMovementY(y, key, keylocation, flag,board,p):
                 board[key][keylocation].initalcolor = red
                 p.location = p.location + 1
                 p.position = p.Key + str(p.location)
+                return move
 
 
 def main_menu():
@@ -339,8 +347,7 @@ def main():
         draw_game_grid() # Drawing inital grid
         p.draw(window) # Drawing player on grid
         if move == True:
-            p.move(board, p) # Movement for player
-            # print(p.position)             # Debug player position
+            move = p.move(board, p, move) # Movement for player
         else:
             for key in board.keys():
                 for count, index in enumerate(board[key]):
@@ -348,7 +355,6 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     p.hit = FireKey + str(FireLocation)
-                    # print(p.hit)          # Debug hit position
                     if board[FireKey][FireLocation].initalcolor == red:
                         board[FireKey][FireLocation].color = red
                         pygame.display.update()
