@@ -3,7 +3,7 @@ import pygame.mixer_music
 from network import Network
 from test import *
 
-
+# updated code
 class game_grid():
     def __init__(self, x, y, key, location, initialcolor):
         self.x = x
