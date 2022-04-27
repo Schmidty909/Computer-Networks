@@ -6,7 +6,7 @@ from game import Game
 
 grey = (128, 128, 128)
 
-server = "10.185.7.34"
+server = "10.185.161.214"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,7 +29,6 @@ def threaded_client(conn, playerCount):
         try:
             # Read the object sent to us
             data = conn.recv(2048 * 4).decode("latin-1")
-            print(data)
             # Store the object we received into our array
             if not data:
                 print("Disconnected")
@@ -54,22 +53,38 @@ def threaded_client(conn, playerCount):
                     gameLogic.p2Turn = False
                     reply = True
                     conn.sendall(pickle.dumps(reply))
-                else:
-                    gameLogic.p1Hit = data
-                    reply = gameLogic.getp1Hit()
+                elif data.find("p1Coords:") != -1:
+                    reply = (data[9:11])
+                    print(reply)
+                    gameLogic.p1Coords = reply
                     conn.sendall(pickle.dumps(reply))
-
-                #     if playerCount == "0":
-                #         gameLogic.p1Coords = data
-                #         reply = gameLogic.p1Coords
-                #         conn.sendall(pickle.dumps(reply))
-                #     if playerCount == "1":
-                #         gameLogic.p2Coords = data
-                #         reply = gameLogic.p2Coords
-                #         conn.sendall(pickle.dumps(reply))
-                #     print(gameLogic.p1Coords)
-                #     print(gameLogic.p2Coords)
-
+                elif data.find("p1Hit:") != 1:
+                    reply = data[6:8]
+                    print(reply)
+                    gameLogic.p1Hit = reply
+                    conn.sendall(pickle.dumps(reply))
+                elif data.find("p2Coords:") != -1:
+                    reply = (data[9:11])
+                    print(reply)
+                    gameLogic.p1Coords = reply
+                    conn.sendall(pickle.dumps(reply))
+                elif data.find("p2Hit:") != 1:
+                    reply = data[6:8]
+                    print(reply)
+                    gameLogic.p1Hit = reply
+                    conn.sendall(pickle.dumps(reply))
+                elif data == "getP2Coords":
+                    reply = gameLogic.p2Coords
+                    conn.sendall(pickle.dumps(reply))
+                elif data == "getP2Hit":
+                    reply = gameLogic.p2Hit
+                    conn.sendall(pickle.dumps(reply))
+                elif data == "getP1Coords":
+                    reply = gameLogic.p1Coords
+                    conn.sendall(pickle.dumps(reply))
+                elif data == "getP1Hit":
+                    reply = gameLogic.p1Hit
+                    conn.sendall(pickle.dumps(reply))
         except:
             break
     print("Lost Connection")
