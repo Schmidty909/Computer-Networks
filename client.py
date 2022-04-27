@@ -262,8 +262,6 @@ def printStartingText():
     start_pos_text = font.render("position.", True, white)
     window.blit(start_pos_text, (1100, 520))
 
-# def initializePygame():
-
 def main():
 
     # Initialize Pygame
@@ -376,11 +374,6 @@ def main():
     window.fill(black)
     draw_game_grid()
     pygame.display.update()
-#    if playerID == 1:
- #       while(not game.p2Turn):
-  #          print("Waiting for player 1...")
-
-
 
     while run:
         clock.tick(30)
@@ -411,7 +404,6 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p1Hit = p.hit
                         game.p1Coords = p.position
-                        #game.endTurn(playerID)
                         if localp1Turn == True:
                             move = True
                             if pDone == True:
@@ -433,7 +425,6 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p2Hit = p.hit
                         game.p2Coords = p.position
-                        #game.endTurn(playerID)
                         if localp2Turn == True:
                             move = True
                             if pDone == True:
@@ -450,8 +441,6 @@ def main():
                             localp1Turn = n.send("checkp1")
                             if(localp1Turn == False):
                                 localp2Turn = True
-
-                    # game.endTurn(playerID)
 
         pygame.display.update()
         for event in pygame.event.get():
