@@ -391,6 +391,10 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     p.hit = FireKey + str(FireLocation)
+                    if playerID == 0:
+                        game.p1Hit = p.hit
+                    if playerID == 1:
+                        game.p2Hit = p.hit
                     if board[FireKey][FireLocation].initalcolor == red:
                         board[FireKey][FireLocation].color = red
                         pygame.display.update()
@@ -404,6 +408,13 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p1Hit = p.hit
                         game.p1Coords = p.position
+                        game.p2Coords = n.send(str(game.p1Hit))
+                        print("LOCATION")
+                        print(game.p2Coords)
+                        if(game.p2Coords == game.p1Hit):
+                            print("Player 1 wins!")
+                            game.checkWin()
+
                         if localp1Turn == True:
                             move = True
                             if pDone == True:

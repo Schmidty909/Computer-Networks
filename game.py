@@ -8,6 +8,9 @@ class Game():
         self.p2Hit = ""
         self.winner = ""
 
+    def getp1Hit(self):
+        return self.p1Hit
+
     def getp1Turn(self):
         return self.p1Turn
 

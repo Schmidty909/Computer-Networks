@@ -38,22 +38,38 @@ def threaded_client(conn, playerCount):
                 if data == "game":
                     reply = gameLogic
                     conn.sendall(pickle.dumps(reply))
-                if data == "checkp1":
+                elif data == "checkp1":
                     reply = gameLogic.getp1Turn()
                     conn.sendall(pickle.dumps(reply))
-                if data == "checkp2":
+                elif data == "checkp2":
                     reply = gameLogic.getp2Turn()
                     conn.sendall(pickle.dumps(reply))
-                if data == "0":
+                elif data == "0":
                     gameLogic.p1Turn = False
                     gameLogic.p2Turn = True
                     reply = True
                     conn.sendall(pickle.dumps(reply))
-                if data == "1":
+                elif data == "1":
                     gameLogic.p1Turn = True
                     gameLogic.p2Turn = False
                     reply = True
                     conn.sendall(pickle.dumps(reply))
+                else:
+                    gameLogic.p1Hit = data
+                    reply = gameLogic.getp1Hit()
+                    conn.sendall(pickle.dumps(reply))
+
+                #     if playerCount == "0":
+                #         gameLogic.p1Coords = data
+                #         reply = gameLogic.p1Coords
+                #         conn.sendall(pickle.dumps(reply))
+                #     if playerCount == "1":
+                #         gameLogic.p2Coords = data
+                #         reply = gameLogic.p2Coords
+                #         conn.sendall(pickle.dumps(reply))
+                #     print(gameLogic.p1Coords)
+                #     print(gameLogic.p2Coords)
+
         except:
             break
     print("Lost Connection")
