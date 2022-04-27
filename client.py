@@ -391,30 +391,30 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     p.hit = FireKey + str(FireLocation)
-                    if playerID == 0:
-                        game.p1Hit = p.hit
-                    if playerID == 1:
-                        game.p2Hit = p.hit
                     if board[FireKey][FireLocation].initalcolor == red:
                         board[FireKey][FireLocation].color = red
                         pygame.display.update()
                     else:
                         board[FireKey][FireLocation].color = ocean_blue
                         pygame.display.update()
-
                     move = False
                     if playerID == "0":
                         localp1Turn = n.send("checkp1")
                         localp2Turn = n.send("checkp2")
                         game.p1Hit = p.hit
-                        game.p1Coords = p.position
-                        game.p2Coords = n.send(str(game.p1Hit))
-                        print("LOCATION")
+                        game.p1Coords = str(p.position)
+                        
+                        Coords = ("p1Coords:" + p.position)
+                        game.p1Coords = n.send(Coords)
+                        test = ("p1Hit:" + p.hit)
+                        game.p1Hit = n.send(test)
+                        
+                        game.p2Coords = n.send("getP2Coords")
+                        game.p2Hit = n.send("getP2Hit")
+                        
                         print(game.p2Coords)
-                        if(game.p2Coords == game.p1Hit):
-                            print("Player 1 wins!")
-                            game.checkWin()
-
+                        print(game.p2Hit)
+                        
                         if localp1Turn == True:
                             move = True
                             if pDone == True:
@@ -433,6 +433,10 @@ def main():
                         localp2Turn = n.send("checkp2")
                         game.p2Hit = p.hit
                         game.p2Coords = p.position
+                        Coords = ("p2Coords:" + p.position)
+                        game.p1Coords = n.send(Coords)
+                        test = ("p2Hit:" + p.hit)
+                        game.p1Hit = n.send(test)
                         if localp2Turn == True:
                             move = True
                             if pDone == True:
