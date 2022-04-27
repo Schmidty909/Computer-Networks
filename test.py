@@ -15,7 +15,7 @@ grey = (128, 128, 128)
 black = (0, 0, 0)
 
 
-# Variables used for generating pygame screen
+# Variables used for generating p ygame screen
 win_width = 1600
 win_height = 1100
 # window = pygame.display.set_mode((win_width, win_height))

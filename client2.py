@@ -316,17 +316,7 @@ def main():
     # Create start menu button objects
     StartButton = Button(470, 425, win_width, win_height, "Start", white, grey)
     QuitButton = Button(470, 500, win_width, win_height, "Quit", white, grey)
-    # # # Starting the mixer
-    # pygame.mixer.init()
-    #
-    # # Loading the song
-    # pygame.mixer.music.load("VaughnSlow.mp3")
-    #
-    # # Setting the volume
-    # pygame.mixer.music.set_volume(0.7)
-    #
-    # # # Start playing the song
-    # pygame.mixer.music.play()
+
 
     while main:
 
