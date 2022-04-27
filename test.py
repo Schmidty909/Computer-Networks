@@ -1,6 +1,7 @@
 import pygame
 
 
+# updated code
 
 
 # Global variables used for player position
