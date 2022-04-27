@@ -1,6 +1,8 @@
 import pygame
 
 
+
+
 # Global variables used for player position
 Key = "a"
 KeyPosition = 0
@@ -27,3 +29,4 @@ win_height = 1100
 # Variables used to parse through the game board
 grid_width = 10
 grid_length = 10
+

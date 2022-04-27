@@ -103,8 +103,7 @@ def draw_game_grid():
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 
-def ValidateMovementX(x, key, keylocation, flag):
-    print(board)
+def ValidateMovementX(x, key, keylocation, flag,board,p):
     # Moving player left
     if flag == 0:
         # Checking left boundary isn't crossed
@@ -142,9 +141,9 @@ def ValidateMovementX(x, key, keylocation, flag):
                 p.position = p.Key + str(p.location)
 
 
-def ValidateMovementY(y, key, keylocation, flag):
-    global board
-    # Moving player up
+def ValidateMovementY(y, key, keylocation, flag,board,p):
+    # Moving player up+
+
     if flag == 0:
         # Checking top boundary
         if y - 100 < board["a"][0].y:
@@ -337,7 +336,7 @@ def main():
         draw_game_grid() # Drawing inital grid
         p.draw(window) # Drawing player on grid
         if move == True:
-            p.move() # Movement for player
+            p.move(board,p) # Movement for player
             # print(p.position)             # Debug player position
         else:
             for key in board.keys():

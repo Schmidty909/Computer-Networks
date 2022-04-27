@@ -20,19 +20,19 @@ class Player():
     def draw(self, window):
         pygame.draw.rect(window, self.color, self.rect)
 
-    def move(self):
+    def move(self,board,p):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            ValidateMovementX(self.x, self.Key, self.location, 0)
+            ValidateMovementX(self.x, self.Key, self.location, 0, board,p)
 
         if keys[pygame.K_RIGHT]:
-            ValidateMovementX(self.x, self.Key, self.location, 1)
+            ValidateMovementX(self.x, self.Key, self.location, 1, board,p)
 
         if keys[pygame.K_UP]:
-            ValidateMovementY(self.y, self.Key, self.location, 0)
+            ValidateMovementY(self.y, self.Key, self.location, 0, board,p)
 
         if keys[pygame.K_DOWN]:
-            ValidateMovementY(self.y,self.Key, self.location, 1)
+            ValidateMovementY(self.y,self.Key, self.location, 1, board,p)
 
         self.rect = (self.x, self.y, self.width, self.height)
