@@ -25,6 +25,8 @@ class game_grid():
                 self.color = red
                 Key = self.key
                 KeyPosition = self.location
+                p.Key = self.key
+                p.location = self.location
                 p.x = self.x + 25
                 p.y = self.y + 25
         else:
