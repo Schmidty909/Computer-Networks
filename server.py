@@ -6,7 +6,7 @@ from game import Game
 
 grey = (128, 128, 128)
 
-server = "192.168.0.8"
+server = "10.185.7.34"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,7 +37,25 @@ def threaded_client(conn, playerCount):
             else:
                 if data == "game":
                     reply = gameLogic
-                conn.sendall(pickle.dumps(reply))
+                    conn.sendall(pickle.dumps(reply))
+                if data == "checkp1":
+                    reply = gameLogic.getp1Turn()
+                    conn.sendall(pickle.dumps(reply))
+                if data == "checkp2":
+                    reply = gameLogic.getp2Turn()
+                    conn.sendall(pickle.dumps(reply))
+                if data == "0":
+                    gameLogic.p1Turn = False
+                    gameLogic.p2Turn = True
+                    reply = True
+                    print(reply)
+                    conn.sendall(pickle.dumps(reply))
+                if data == "1":
+                    gameLogic.p1Turn = True
+                    gameLogic.p2Turn = False
+                    reply = True
+                    print(reply)
+                    conn.sendall(pickle.dumps(reply))
         except:
             break
     print("Lost Connection")

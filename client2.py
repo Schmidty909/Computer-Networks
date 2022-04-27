@@ -2,7 +2,7 @@ import pygame.display
 import pygame.mixer_music
 from network import Network
 from test import *
-# updated code
+
 
 class game_grid():
     def __init__(self, x, y, key, location, initialcolor):
@@ -44,6 +44,37 @@ class game_grid():
                 FireLocation = self.location
         else:
             self.color = self.initalcolor
+
+class Player():
+    def __init__(self, x, y, key, keylocation, width, height, color):
+        self.x = x
+        self.y = y
+        self.Key = key
+        self.location = keylocation
+        self.width = width
+        self.height = height
+        self.color = color
+        self.rect = (x, y, width, height)
+        self.hit = ""
+        self.position = str(self.Key) + str(self.location)
+        self.playerid = -1
+
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, self.rect)
+
+    def move(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            ValidateMovementX(self.x, self.Key, self.location, 0)
+        if keys[pygame.K_RIGHT]:
+            ValidateMovementX(self.x, self.Key, self.location, 1)
+        if keys[pygame.K_UP]:
+            ValidateMovementY(self.y, self.Key, self.location, 0)
+        if keys[pygame.K_DOWN]:
+            ValidateMovementY(self.y,self.Key, self.location, 1)
+
+        self.rect = (self.x, self.y, self.width, self.height)
 
 
 class Button():
@@ -105,25 +136,23 @@ def draw_game_grid():
         pygame.draw.rect(window, black, (0, y * 100 + 50, win_height, 2))
 
 
-def ValidateMovementX(x, key, keylocation, flag, board, p, move, n):
+def ValidateMovementX(x, key, keylocation, flag):
+    global move
     # Moving player left
     if flag == 0:
         # Checking left boundary isn't crossed
         if x - 100 < board["a"][0].x:
-            return True
+            return 0
         else:
            if board[chr(ord(key)-1)][keylocation].color == red or board[chr(ord(key)-1)][keylocation].color == green:
                p.x = x
-               return True
            else:
                move = False
                p.x -= 100
-               p = n.send(p)
                board[key][keylocation].color = red
                board[key][keylocation].initalcolor = red
                p.Key = chr(ord(key) - 1)
                p.position = p.Key + str(p.location)
-               return move
 
     # Moving player right
     else:
@@ -133,42 +162,36 @@ def ValidateMovementX(x, key, keylocation, flag, board, p, move, n):
                 None
 
         if x + 100 > board[k][count].x +25:
-            return True
+            return 0
         else:
             if board[chr(ord(key) + 1)][keylocation].color == red or board[chr(ord(key) + 1)][keylocation].color == green:
                 p.x = x
-                return True
             else:
                 p.x += 100
-                p = n.send(p)
                 move = False
                 board[key][keylocation].color = red
                 board[key][keylocation].initalcolor = red
                 p.Key = chr(ord(key)+1)
                 p.position = p.Key + str(p.location)
-                return move
 
 
-def ValidateMovementY(y, key, keylocation, flag, board, p, move, n):
+def ValidateMovementY(y, key, keylocation, flag):
     # Moving player up+
-
+    global move
     if flag == 0:
         # Checking top boundary
         if y - 100 < board["a"][0].y:
-            return True
+            return 0
         else:
             if board[key][keylocation-1].color == red or board[key][keylocation-1].color == green:
                 p.y = y
-                return True
             else:
                 p.y -= 100
-                p = n.send(p)
                 move = False
                 board[key][keylocation].color = red
                 board[key][keylocation].initalcolor = red
                 p.location = p.location - 1
                 p.position = p.Key + str(p.location)
-                return move
 
 
     # Moving player down
@@ -178,26 +201,25 @@ def ValidateMovementY(y, key, keylocation, flag, board, p, move, n):
             for count, index in enumerate(board[k]):
                 None
         if y + 100 > board[k][count].y +25:
-            return True
+            return 0
         else:
             if board[key][keylocation+1].color == red or board[key][keylocation+1].color == green:
                 p.y = y
-                return True
             else:
                 p.y += 100
-                p = n.send(p)
                 move = False
                 board[key][keylocation].color = red
                 board[key][keylocation].initalcolor = red
                 p.location = p.location + 1
                 p.position = p.Key + str(p.location)
-                return move
 
 
 def main_menu():
 
     global win_width
     global win_height
+    win_width = 1100
+    win_height = 1100
     global start, startRect, text, textRect, Quit, QuitRect
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
@@ -267,9 +289,13 @@ def main():
     global font
     font = pygame.font.Font('cour.ttf', 40)
 
-    n = Network()
     global p
-    p = n.getP()
+
+    n = Network()
+    playerID = n.getP()
+    print(playerID)
+
+    game = n.send("game")
 
     global move
     move = False
@@ -278,7 +304,11 @@ def main():
     Selection = True
     clock = pygame.time.Clock()
 
-    Fired = False
+    global p
+    p = Player(0, 0, Key, KeyPosition, 50, 50, grey)
+
+    localp1Turn = True
+    localp2Turn = False
 
     global StartButton
     global QuitButton
@@ -297,6 +327,8 @@ def main():
 
         mainSelection()
         pygame.display.update()
+
+        pDone = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -344,40 +376,28 @@ def main():
     window.fill(black)
     draw_game_grid()
     pygame.display.update()
-
-    p = n.send(p)
-    print(p.playerid)
-    if p.playerid == 0:
-        p.ourTurn = True
+#    if playerID == 1:
+ #       while(not game.p2Turn):
+  #          print("Waiting for player 1...")
 
 
-    # Start game
+
     while run:
         clock.tick(30)
         window.fill(black)
         draw_game_grid() # Drawing inital grid
         p.draw(window) # Drawing player on grid
 
-        if p.ourTurn == True:
-            move = True
-            p.ourTurn = False
-            Fired = False
+        if move == True:
+            p.move() # Movement for player
+            pDone = True
         else:
-            # p = n.send(p)
-            print("x: ", p.x, "y: ", p.y)
-            p.draw(window) # Drawing player on grid
-            pygame.display.update()
-        if move == True and Fired == False:
-            move = p.move(board, p, move, n) # Movement for player
-        if move == False and Fired == False:
             for key in board.keys():
                 for count, index in enumerate(board[key]):
                     game_grid.Fire(board[key][count])
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if window.get_at(pygame.mouse.get_pos()) == red:
                     p.hit = FireKey + str(FireLocation)
-                    print(p.hit)
-                    Fired = True
                     if board[FireKey][FireLocation].initalcolor == red:
                         board[FireKey][FireLocation].color = red
                         pygame.display.update()
@@ -385,13 +405,54 @@ def main():
                         board[FireKey][FireLocation].color = ocean_blue
                         pygame.display.update()
 
+                    move = False
+                    if playerID == "0":
+                        localp1Turn = n.send("checkp1")
+                        localp2Turn = n.send("checkp2")
+                        game.p1Hit = p.hit
+                        game.p1Coords = p.position
+                        #game.endTurn(playerID)
+                        if localp1Turn == True:
+                            move = True
+                            if pDone == True:
+                                game.endTurn(playerID)
+                                localp2Turn = n.send(playerID)
+                                localp1Turn = not localp2Turn
+                                pDone = False
+                                game.p1Turn = localp1Turn
+                                game.p2Turn = localp2Turn
+                        while(localp2Turn):
+                            print("P2", localp2Turn)
+                            print("P1", localp1Turn)
+                            print("Waiting for Player 2...")
+                    if playerID == "1":
+                        localp1Turn = n.send("checkp1")
+                        localp2Turn = n.send("checkp2")
+                        game.p2Hit = p.hit
+                        game.p2Coords = p.position
+                        #game.endTurn(playerID)
+                        if localp2Turn == True:
+                            move = True
+                            if pDone == True:
+                                game.endTurn(playerID)
+                                localp1Turn = n.send(playerID)
+                                localp2Turn = not localp1Turn
+                                pDone = False
+                                game.p1Turn = localp1Turn
+                                game.p2Turn = localp2Turn
+                        while(localp1Turn):
+                            print("P2", localp2Turn)
+                            print("P1", localp1Turn)
+                            print("Waiting for Player 1...")
 
+                    # game.endTurn(playerID)
 
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+
 
 if __name__ == "__main__":
     main()

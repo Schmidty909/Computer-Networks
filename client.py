@@ -218,6 +218,8 @@ def main_menu():
 
     global win_width
     global win_height
+    win_width = 1100
+    win_height = 1100
     global start, startRect, text, textRect, Quit, QuitRect
     pygame.display.set_mode((win_width, win_height))
     pygame.display.set_caption("Menu")
@@ -305,6 +307,9 @@ def main():
     global p
     p = Player(0, 0, Key, KeyPosition, 50, 50, grey)
 
+    localp1Turn = True
+    localp2Turn = False
+
     global StartButton
     global QuitButton
 
@@ -322,6 +327,8 @@ def main():
 
         mainSelection()
         pygame.display.update()
+
+        pDone = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -369,9 +376,9 @@ def main():
     window.fill(black)
     draw_game_grid()
     pygame.display.update()
-    if playerID == 1:
-        while(not game.p2Turn):
-            print("Waiting for player 1...")
+#    if playerID == 1:
+ #       while(not game.p2Turn):
+  #          print("Waiting for player 1...")
 
 
 
@@ -383,6 +390,7 @@ def main():
 
         if move == True:
             p.move() # Movement for player
+            pDone = True
         else:
             for key in board.keys():
                 for count, index in enumerate(board[key]):
@@ -399,22 +407,45 @@ def main():
 
                     move = False
                     if playerID == "0":
+                        localp1Turn = n.send("checkp1")
+                        localp2Turn = n.send("checkp2")
                         game.p1Hit = p.hit
                         game.p1Coords = p.position
-                        game.endTurn(0)
-                        if game.p1Turn == True:
+                        #game.endTurn(playerID)
+                        if localp1Turn == True:
                             move = True
-                        else:
+                            if pDone == True:
+                                game.endTurn(playerID)
+                                localp2Turn = n.send(playerID)
+                                localp1Turn = not localp2Turn
+                                pDone = False
+                                game.p1Turn = localp1Turn
+                                game.p2Turn = localp2Turn
+                        while(localp2Turn):
+                            print("P2", localp2Turn)
+                            print("P1", localp1Turn)
                             print("Waiting for Player 2...")
-                        # while(not game.p1Turn):
-                        #     print("Waiting for Player 2...")
                     if playerID == "1":
+                        localp1Turn = n.send("checkp1")
+                        localp2Turn = n.send("checkp2")
                         game.p2Hit = p.hit
                         game.p2Coords = p.position
-                        game.endTurn(1)
-                        # while(not game.p2Turn):
-                        #     print("Waiting for Player 1...")
+                        #game.endTurn(playerID)
+                        if localp2Turn == True:
+                            move = True
+                            if pDone == True:
+                                game.endTurn(playerID)
+                                localp1Turn = n.send(playerID)
+                                localp2Turn = not localp1Turn
+                                pDone = False
+                                game.p1Turn = localp1Turn
+                                game.p2Turn = localp2Turn
+                        while(localp1Turn):
+                            print("P2", localp2Turn)
+                            print("P1", localp1Turn)
+                            print("Waiting for Player 1...")
 
+                    # game.endTurn(playerID)
 
         pygame.display.update()
         for event in pygame.event.get():

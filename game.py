@@ -9,16 +9,17 @@ class Game():
         self.winner = ""
 
     def getp1Turn(self):
+        print(self.p1Turn)
         return self.p1Turn
 
     def getp2Turn(self):
         return self.p2Turn
 
     def endTurn(self, player):
-        if player == 0:
+        if player == "0":
             self.p1Turn = False
             self.p2Turn = True
-        if player == 1:
+        if player == "1":
             self.p1Turn = True
             self.p2Turn = False
 
