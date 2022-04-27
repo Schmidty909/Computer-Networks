@@ -9,7 +9,6 @@ class Game():
         self.winner = ""
 
     def getp1Turn(self):
-        print(self.p1Turn)
         return self.p1Turn
 
     def getp2Turn(self):
