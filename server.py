@@ -48,13 +48,11 @@ def threaded_client(conn, playerCount):
                     gameLogic.p1Turn = False
                     gameLogic.p2Turn = True
                     reply = True
-                    print(reply)
                     conn.sendall(pickle.dumps(reply))
                 if data == "1":
                     gameLogic.p1Turn = True
                     gameLogic.p2Turn = False
                     reply = True
-                    print(reply)
                     conn.sendall(pickle.dumps(reply))
         except:
             break

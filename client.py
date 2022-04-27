@@ -414,9 +414,6 @@ def main():
                                 game.p1Turn = localp1Turn
                                 game.p2Turn = localp2Turn
                         while(localp2Turn):
-                            print("P2", localp2Turn)
-                            print("P1", localp1Turn)
-                            print("Waiting for Player 2...")
                             localp2Turn = n.send("checkp2")
                             if(localp2Turn == False):
                                 localp1Turn = True
@@ -435,9 +432,6 @@ def main():
                                 game.p1Turn = localp1Turn
                                 game.p2Turn = localp2Turn
                         while(localp1Turn):
-                            print("P2", localp2Turn)
-                            print("P1", localp1Turn)
-                            print("Waiting for Player 1...")
                             localp1Turn = n.send("checkp1")
                             if(localp1Turn == False):
                                 localp2Turn = True
